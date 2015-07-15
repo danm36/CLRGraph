@@ -1,4 +1,4 @@
-﻿;;;; This script draws four spirals using the sin and cos trigonmetry
+;;;; This script draws four spirals using the sin and cos trigonmetry
 ;;;; functions. This also details the creation of new data series.
 ;;;; Remember to switch to a 3D rendering mode!
 
@@ -34,7 +34,7 @@
 ;; case that is not desirable.
 ;; If you want, change it to add-data-points-3d and comment out
 ;; add-new-current-data-series and see how the graph changes
-(add-new-current-data-series)
+(add-new-current-series)
 (set-data-points-3d
 	(CMath/Sin (range (+ xstart halfpi) (+ xend halfpi) trigstep))
 	(CMath/Cos (range (+ xstart halfpi) (+  xend halfpi) trigstep))
@@ -43,7 +43,7 @@
 )
 
 ;; And again, this time with a pi offset from the first spiral
-(add-new-current-data-series)
+(add-new-current-series)
 (set-data-points-3d
 	(CMath/Sin (range (+ xstart pi) (+  xend pi) trigstep))
 	(CMath/Cos (range (+ xstart pi) (+  xend pi) trigstep))
@@ -52,7 +52,7 @@
 )
 
 ;; And out last spiral 1.5PI offset from the first spiral
-(add-new-current-data-series)
+(add-new-current-series)
 (set-data-points-3d
 	(CMath/Sin (range (+ xstart onehalfpi) (+ xend onehalfpi) trigstep))
 	(CMath/Cos (range (+ xstart onehalfpi) (+  xend onehalfpi) trigstep))

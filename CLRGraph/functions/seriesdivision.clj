@@ -22,9 +22,7 @@
 					(set-data-points p1)
 					(add-new-current-series)
 					(add-data-points p2)
-					(set-current-series s))
-					
-					(if (> (count p1) 0) (set-data-points p1) (set-data-points p2))))))
+					(set-current-series s))))))
 )
 
 (defn axis-split-series
@@ -41,4 +39,26 @@
 			(split-series (+ series-id 5) #(>= (.x %) 0))
 			)
 	)
+)
+
+(defn filter-series
+	"Removes all points that dont fit the given function."
+	([f]
+		(filter-series (get-current-series) f))
+	([s f]
+		(if (not= (get-series s) nil)
+			(let [points (filter f (get-data-points s))]
+				(set-current-series s)
+				(set-data-points points))))
+)
+
+(defn remove-series
+	"Removes all points that fit the given function."
+	([f]
+		(remove-series (get-current-series) f))
+	([s f]
+		(if (not= (get-series s) nil)
+			(let [points (remove f (get-data-points s))]
+				(set-current-series s)
+				(set-data-points points))))
 )

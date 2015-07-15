@@ -296,12 +296,13 @@ namespace CLRGraph
                     }
                 }
 
+                GLGraph.Redraw();
                 return true;
             }
             catch (Exception ex)
             {
                 Log(ex.ToString());
-
+                GLGraph.Redraw();
                 return false;
             }
         }

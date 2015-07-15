@@ -76,7 +76,7 @@ namespace CLRGraph
             new DataSeries();
             CurrentDataSeries = 0;
 
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
         }
         #endregion
 
@@ -188,36 +188,42 @@ namespace CLRGraph
 
             UpdateVertexVBO();
             UpdateIndexVBO();
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
 
             GLGraph.self.UpdateMatrices(true);
         }
 
-        public void SetName(string newName)
+        public DataSeries SetName(string newName)
         {
             newName = newName.Trim();
 
             if (newName.Length == 0)
-                return;
+                return this;
 
             Name = newName;
 
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
+
+            return this;
         }
 
-        public void SetColor(Color newColor)
+        public DataSeries SetColor(Color newColor)
         {
             newColor = Color.FromArgb(255, newColor.R, newColor.G, newColor.B);
             DrawColor = newColor;
 
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
+
+            return this;
         }
 
-        public void SetHidden(bool newHidden)
+        public DataSeries SetHidden(bool newHidden)
         {
             Hidden = newHidden;
 
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
+
+            return this;
         }
 
         public void ChangeShader(Shader newShader)
@@ -226,12 +232,14 @@ namespace CLRGraph
             DrawShader = newShader;
         }
 
-        public void ClearDataPoints()
+        public DataSeries ClearDataPoints()
         {
             DataPoints = PersistentVector.EMPTY;
             CachedBounds = null;
 
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
+
+            return this;
         }
 
         public PersistentVector GetDataPoints()
@@ -284,7 +292,7 @@ namespace CLRGraph
                 ((GraphPoint)DataPoints[i]).index = i;
 
             UpdateVertexVBO();
-            DataSeriesFuncs.UpdateSeriesInfoInUI();
+            DataSeries_Funcs.UpdateSeriesInfoInUI();
 
             CachedBounds = null;
             return newPoints.Count;
@@ -410,7 +418,7 @@ namespace CLRGraph
             lastTransparencyMode = TransparencyMode = mode;
         }
 
-        public void Draw()
+        public void Draw(bool bSimpleRedraw = false)
         {
             if (Hidden || DataPoints.Count == 0)
                 return;
@@ -468,8 +476,11 @@ namespace CLRGraph
 
                 if (bNeedsIndices && indices != null && indices.Length > 0)
                 {
+                    if (bSimpleRedraw)
+                        primMode = PrimitiveType.Lines;
+
                     //Polys
-                    if (TransparencyMode == CLRGraph.TransparencyMode.Transparent)
+                    if (TransparencyMode == CLRGraph.TransparencyMode.Transparent && primMode != PrimitiveType.Lines)
                         GL.Enable(EnableCap.Blend);
                     GL.Enable(EnableCap.PolygonOffsetFill);
                     GL.PolygonOffset(1.0f, 1.0f);
@@ -479,21 +490,24 @@ namespace CLRGraph
                     GL.Disable(EnableCap.Blend);
 
                     //Edges
-                    if (TransparencyMode == CLRGraph.TransparencyMode.Transparent)
-                        GL.Disable(EnableCap.DepthTest);
-                    GL.Uniform1(DrawShader.GetUniformLocation("uSeriesColorScale"), 0.6f);
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-                    GL.DrawElements(primMode, indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-                    GL.Enable(EnableCap.DepthTest);
-                    GL.Disable(EnableCap.CullFace);
+                    if (primMode != PrimitiveType.Lines) //No point drawing again
+                    {
+                        if (TransparencyMode == CLRGraph.TransparencyMode.Transparent)
+                            GL.Disable(EnableCap.DepthTest);
+                        GL.Uniform1(DrawShader.GetUniformLocation("uSeriesColorScale"), 0.6f);
+                        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                        GL.DrawElements(primMode, indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                        GL.Enable(EnableCap.DepthTest);
+                        //GL.Disable(EnableCap.CullFace);
+                    }
 
                     //Vertices
                     GL.DrawArrays(PrimitiveType.Points, 0, DataPoints.Count);
                 }
                 else
                 {
-                    GL.DrawArrays(backupPrimMode, 0, DataPoints.Count);
+                    GL.DrawArrays(bSimpleRedraw ? PrimitiveType.Points : backupPrimMode, 0, DataPoints.Count);
                 }
                 
                 GL.DisableVertexAttribArray(DrawShader.vertexAttribLocation);
@@ -609,7 +623,7 @@ namespace CLRGraph
 
         public GraphPoint(Vector3 nPos)
         {
-            index = DataSeriesFuncs.GetCurrentDataSeries().GetPointCount();
+            index = DataSeries_Funcs.GetCurrentDataSeries().GetPointCount();
 
             pos = nPos;
         }
@@ -660,7 +674,7 @@ namespace CLRGraph
             if (other == null)
                 return;
 
-            index = DataSeriesFuncs.GetCurrentDataSeries().GetPointCount();
+            index = DataSeries_Funcs.GetCurrentDataSeries().GetPointCount();
 
             pos = other.pos;
 
@@ -803,7 +817,7 @@ namespace CLRGraph
 
         public override string ToString()
         {
-            return "{(" + index + ") " + pos.X + ", " + pos.Y + ", " + pos.Z + "}";
+            return "{" + pos.X + ", " + pos.Y + ", " + pos.Z + "}";
         }
 
 

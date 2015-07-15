@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace CLRGraph
 
         public GLControl glControl;
         bool GL_Loaded = false;
+        bool GL_NeedRedraw = true;
+        bool GL_SimpleRedraw = true;
 
         Matrix4 PVMMatrix, projectionMatrix, viewMatrix;
         Vector3 cameraLocation = new Vector3(0.0f, 1.0f, -6.0f), cameraFocus = new Vector3(0, 0, 0);
@@ -40,6 +43,8 @@ namespace CLRGraph
         Shader microAxisShader = null;
 
         public static ProjectionType ProjectionType { get; private set; }
+
+        Stopwatch fpsStopwatch = new Stopwatch();
 
         bool drawAxes = true, drawAxesInColor = true;
         float[] graphAxes;
@@ -64,7 +69,8 @@ namespace CLRGraph
 
             Application.Idle += (s, e) =>
             {
-                glControl.Invalidate();
+                if (GL_NeedRedraw)
+                    glControl.Invalidate();
             };
 
             ProjectionType = ProjectionType.RM_2D;
@@ -74,6 +80,8 @@ namespace CLRGraph
         {
             if (DesignMode)
                 return;
+
+            glControl.VSync = true;
 
             GL_Loaded = true;
 
@@ -101,7 +109,7 @@ namespace CLRGraph
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(sizeof(float) * graphMicroAxes.Length), graphMicroAxes, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            GraphFuncs.ResetGraph();
+            Graph_Funcs.ResetGraph();
             ResetCamera();
         }
 
@@ -113,9 +121,9 @@ namespace CLRGraph
             // glControl
             // 
             this.glControl.BackColor = System.Drawing.Color.Black;
-            this.glControl.Location = new System.Drawing.Point(104, 116);
+            this.glControl.Location = new System.Drawing.Point(0, 0);
             this.glControl.Name = "glControl";
-            this.glControl.Size = new System.Drawing.Size(12, 12);
+            this.glControl.Size = new System.Drawing.Size(4, 4);
             this.glControl.TabIndex = 0;
             this.glControl.VSync = false;
             this.glControl.Load += new System.EventHandler(this.glControl_Load);
@@ -131,17 +139,22 @@ namespace CLRGraph
             this.Controls.Add(this.glControl);
             this.Name = "GLGraph";
             this.ResumeLayout(false);
+
         }
 
         public void SetBackgroundColor(Color newCol)
         {
             GL.ClearColor(newCol);
+
+            Redraw();
         }
 
         public void RecreateShaders()
         {
             axisShader = new Shader("shaders/v_graphaxis.vert", "shaders/f_graphaxis.frag");
             microAxisShader = new Shader("shaders/v_graphmicroaxis.vert", "shaders/f_graphaxis.frag");
+
+            Redraw();
         }
 
         public void SetProjectionType(ProjectionType newProjectionType)
@@ -149,16 +162,19 @@ namespace CLRGraph
             ProjectionType = newProjectionType;
 
             UpdateMatrices(true);
+            Redraw();
         }
 
         public void SetAxisDisplay(bool showAxis)
         {
             drawAxes = showAxis;
+            Redraw();
         }
 
         public void SetAxisColor(bool showAxesInColor)
         {
             drawAxesInColor = showAxesInColor;
+            Redraw();
         }
 
         public void UpdateGraphAxes()
@@ -191,6 +207,8 @@ namespace CLRGraph
             GL.BindBuffer(BufferTarget.ArrayBuffer, axisVBO);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(sizeof(float) * graphAxes.Length), graphAxes, BufferUsageHint.StreamDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
+            Redraw();
         }
 
         public void UpdateMatrices(bool updateProjection = false)
@@ -248,6 +266,8 @@ namespace CLRGraph
 
             GL.UseProgram(microAxisShader.shaderProgramHandle);
             GL.UniformMatrix4(microAxisShader.uPVMMatrixLocation, false, ref rotPVMMatrix);
+
+            Redraw();
         }
 
         public void ResetCamera(bool focusOnly = false)
@@ -260,6 +280,14 @@ namespace CLRGraph
             }
 
             UpdateMatrices(true);
+            Redraw();
+        }
+
+        public static void Redraw(bool simpleRedraw = false)
+        {
+            self.Focus();
+            self.GL_NeedRedraw = true;
+            self.GL_SimpleRedraw = simpleRedraw;
         }
 
         protected override void OnResize(EventArgs e)
@@ -275,6 +303,7 @@ namespace CLRGraph
 
             GL.Viewport(Size);
             UpdateMatrices(true);
+            Redraw();
         }
 
         private void glControl_Paint(object sender, PaintEventArgs e)
@@ -282,10 +311,12 @@ namespace CLRGraph
             if (!GL_Loaded)
                 return;
 
+            fpsStopwatch.Restart();
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             for (int i = 0; i < DataSeries.AllDataSeries.Count; i++)
-                DataSeries.AllDataSeries[i].Draw();
+                DataSeries.AllDataSeries[i].Draw(GL_SimpleRedraw);
 
             if (drawAxes)
             {
@@ -311,6 +342,14 @@ namespace CLRGraph
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             glControl.SwapBuffers();
+
+            if (!GL_SimpleRedraw || mouseDown)
+                GL_NeedRedraw = false;
+
+            GL_SimpleRedraw = false;
+
+            fpsStopwatch.Stop();
+            CLRGraph_MainForm.self.FPSCounterLabel.Text = "FPS: " + (1.0 / fpsStopwatch.Elapsed.TotalSeconds);
         }
 
         #region Mouse Control
@@ -325,6 +364,8 @@ namespace CLRGraph
         private void glControl_MouseUp(object sender, MouseEventArgs e)
         {
             mouseDown = false;
+
+            Redraw();
         }
 
         private void glControl_MouseMove(object sender, MouseEventArgs e)
@@ -371,6 +412,8 @@ namespace CLRGraph
             UpdateMatrices();
 
             mouseLastLocation = e.Location;
+
+            Redraw(true);
         }
 
         private void glControl_MouseWheel(object sender, MouseEventArgs e)
@@ -400,6 +443,7 @@ namespace CLRGraph
                 UpdateMatrices();
             }
 
+            Redraw(true);
         }
         #endregion
     }

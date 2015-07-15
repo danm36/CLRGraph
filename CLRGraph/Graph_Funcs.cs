@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace CLRGraph
 {
     [ClojureClass]
-    public static class GraphFuncs
+    public static class Graph_Funcs
     {
         [ClojureStaticMethod("reset-graph", "Resets the entire graph back to its default state, removing all points and series.")]
         public static void ResetGraph()
@@ -278,19 +278,19 @@ namespace CLRGraph
         [ClojureStaticMethod("get-data-points", "Returns a vector of all the graph points in the given series (Defaults to the current series)")]
         public static PersistentVector GetDataPoints()
         {
-            return GetDataPoints(DataSeriesFuncs.GetCurrentDataSeries());
+            return GetDataPoints(DataSeries_Funcs.GetCurrentDataSeries());
         }
 
         [ClojureStaticMethod("get-data-points", "Returns a vector of all the graph points in the given series (Defaults to the current series)")]
         public static PersistentVector GetDataPoints(DataSeries series)
         {
-            return (series ?? DataSeriesFuncs.GetCurrentDataSeries()).DataPoints;
+            return (series ?? DataSeries_Funcs.GetCurrentDataSeries()).DataPoints;
         }
 
         [ClojureStaticMethod("get-data-points", "Returns a vector of all the graph points in the given series (Defaults to the current series)")]
         public static PersistentVector GetDataPoints(int seriesID)
         {
-            DataSeries ds = DataSeriesFuncs.GetSeries(seriesID);
+            DataSeries ds = DataSeries_Funcs.GetSeries(seriesID);
 
             if (ds == null)
                 return PersistentVector.EMPTY;
@@ -304,12 +304,12 @@ namespace CLRGraph
             if (dataPoints == null)
                 return;
 
-            DataSeries currentSeries = DataSeriesFuncs.GetCurrentDataSeries();
+            DataSeries currentSeries = DataSeries_Funcs.GetCurrentDataSeries();
             int added = currentSeries.AddDataPoints(dataPoints);
             GLGraph.self.UpdateGraphAxes();
             GLGraph.self.UpdateMatrices(true);
 
-            ClojureEngine.Log("Added " + added + " points to series '" + currentSeries.Name + "' (" + DataSeriesFuncs.TotalPointCount() + " total points in graph)");
+            ClojureEngine.Log("Added " + added + " points to series '" + currentSeries.Name + "' (" + DataSeries_Funcs.TotalPointCount() + " total points in graph)");
         }
 
         [ClojureStaticMethod("set-data-points", "Sets the points of the current series to the given points")]
@@ -318,12 +318,12 @@ namespace CLRGraph
             if (dataPoints == null)
                 return;
 
-            DataSeries currentSeries = DataSeriesFuncs.GetCurrentDataSeries();
+            DataSeries currentSeries = DataSeries_Funcs.GetCurrentDataSeries();
             int added = currentSeries.SetDataPoints(dataPoints);
             GLGraph.self.UpdateGraphAxes();
             GLGraph.self.UpdateMatrices(true);
 
-            ClojureEngine.Log("Set " + added + " points to series '" + currentSeries.Name + "' (" + DataSeriesFuncs.TotalPointCount() + " total points in graph)");
+            ClojureEngine.Log("Set " + added + " points to series '" + currentSeries.Name + "' (" + DataSeries_Funcs.TotalPointCount() + " total points in graph)");
         }
 
         [ClojureStaticMethod("add-data-points", "Adds the given points to the current series")]
@@ -424,7 +424,7 @@ namespace CLRGraph
         [ClojureStaticMethod("set-data-points-3d", "Sets the points of the current series to the given 3D points")]
         public static void SetDataPoints3D(IList yVals, IList zVals, double xStart, double xIncrement)
         {
-            DataSeriesFuncs.ClearSeriesPoints();
+            DataSeries_Funcs.ClearSeriesPoints();
             AddDataPoints3D(yVals, zVals, xStart, xIncrement);
         }
 

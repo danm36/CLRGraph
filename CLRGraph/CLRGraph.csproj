@@ -74,17 +74,32 @@
     </Compile>
     <Compile Include="CMath.cs" />
     <Compile Include="DataSeries.cs" />
+    <None Include="examples\graphscripts\cloud_hull.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\cloud_partition.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\data_sources.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\JCMB_2015_Jan.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="examples\graphscripts\mexican_hat.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="examples\graphscripts\exponential.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="DataSeriesFuncs.cs" />
+    <Compile Include="DataSeries_AnalysisFuncs.cs" />
+    <Compile Include="DataSeries_Funcs.cs" />
+    <Compile Include="DataSource.cs" />
+    <Compile Include="DataSource_Funcs.cs" />
     <Compile Include="GLGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GraphFuncs.cs" />
+    <Compile Include="Graph_Funcs.cs" />
     <Compile Include="HullGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -108,10 +123,28 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="examples\graphscripts\pacman.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\series_averages.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\star_cloud.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\surface_function.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\test.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="examples\graphscripts\trig_tube.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="functions\random.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="functions\surface.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

@@ -29,10 +29,12 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CLRGraph_MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.FPSCounterLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.glGraph = new CLRGraph.GLGraph();
             this.splitContainer_Right = new System.Windows.Forms.SplitContainer();
@@ -46,16 +48,6 @@
             this.toolStripButton_SaveAsGraphScript = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_CompileGraphScript = new System.Windows.Forms.ToolStripButton();
-            this.tabPage_Data = new System.Windows.Forms.TabPage();
-            this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.toolStrip_Data = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton_OpenData = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_SaveData = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel_DataState = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButton_CommitData = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton_DefineAxes = new System.Windows.Forms.ToolStripButton();
             this.tabPage_Series = new System.Windows.Forms.TabPage();
             this.listView_series = new System.Windows.Forms.ListView();
             this.columnHeader_Visible = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -64,6 +56,14 @@
             this.columnHeader_Color = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader_Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader_PointCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tabPage_DataSource = new System.Windows.Forms.TabPage();
+            this.listView_DataSources = new System.Windows.Forms.ListView();
+            this.columnHeader_DataSourceName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader_DataSourceType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader_DataSourceLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton_AddDataSource = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_RemoveDataSource = new System.Windows.Forms.ToolStripButton();
             this.textBox_Log = new System.Windows.Forms.TextBox();
             this.splitter_Log = new System.Windows.Forms.Splitter();
             this.textBox_RuntimeREPL = new System.Windows.Forms.TextBox();
@@ -106,9 +106,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_ResetCameraFocus = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_ResetCamera = new System.Windows.Forms.ToolStripButton();
-            this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -120,10 +119,9 @@
             this.tabControl_sidebar.SuspendLayout();
             this.tabPage_GraphScript.SuspendLayout();
             this.toolStrip_GraphScript.SuspendLayout();
-            this.tabPage_Data.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
-            this.toolStrip_Data.SuspendLayout();
             this.tabPage_Series.SuspendLayout();
+            this.tabPage_DataSource.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
@@ -143,6 +141,18 @@
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // fileToolStripMenuItem1
+            // 
+            this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
+            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem1.Text = "File";
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -151,11 +161,19 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FPSCounterLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 540);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(784, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // FPSCounterLabel
+            // 
+            this.FPSCounterLabel.Name = "FPSCounterLabel";
+            this.FPSCounterLabel.Size = new System.Drawing.Size(42, 17);
+            this.FPSCounterLabel.Text = "FPS: ??";
             // 
             // splitContainer_Main
             // 
@@ -207,8 +225,8 @@
             // tabControl_sidebar
             // 
             this.tabControl_sidebar.Controls.Add(this.tabPage_GraphScript);
-            this.tabControl_sidebar.Controls.Add(this.tabPage_Data);
             this.tabControl_sidebar.Controls.Add(this.tabPage_Series);
+            this.tabControl_sidebar.Controls.Add(this.tabPage_DataSource);
             this.tabControl_sidebar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl_sidebar.Location = new System.Drawing.Point(0, 0);
             this.tabControl_sidebar.Name = "tabControl_sidebar";
@@ -241,6 +259,7 @@
             this.textBox_GraphScript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox_GraphScript.Size = new System.Drawing.Size(353, 186);
             this.textBox_GraphScript.TabIndex = 1;
+            this.textBox_GraphScript.WordWrap = false;
             // 
             // toolStrip_GraphScript
             // 
@@ -308,110 +327,6 @@
             this.toolStripButton_CompileGraphScript.Text = "Compile";
             this.toolStripButton_CompileGraphScript.Click += new System.EventHandler(this.toolStripButton_CompileGraphScript_Click);
             // 
-            // tabPage_Data
-            // 
-            this.tabPage_Data.Controls.Add(this.dataGridView);
-            this.tabPage_Data.Controls.Add(this.toolStrip_Data);
-            this.tabPage_Data.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_Data.Name = "tabPage_Data";
-            this.tabPage_Data.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_Data.Size = new System.Drawing.Size(359, 217);
-            this.tabPage_Data.TabIndex = 0;
-            this.tabPage_Data.Text = "Data";
-            this.tabPage_Data.UseVisualStyleBackColor = true;
-            // 
-            // dataGridView
-            // 
-            this.dataGridView.AllowUserToOrderColumns = true;
-            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView.Location = new System.Drawing.Point(3, 28);
-            this.dataGridView.Name = "dataGridView";
-            this.dataGridView.RowTemplate.Height = 16;
-            this.dataGridView.Size = new System.Drawing.Size(353, 186);
-            this.dataGridView.TabIndex = 0;
-            this.dataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
-            this.dataGridView.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView_UserAddedRow);
-            this.dataGridView.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView_UserDeletedRow);
-            // 
-            // toolStrip_Data
-            // 
-            this.toolStrip_Data.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip_Data.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton_OpenData,
-            this.toolStripButton_SaveData,
-            this.toolStripSeparator2,
-            this.toolStripLabel_DataState,
-            this.toolStripButton_CommitData,
-            this.toolStripSeparator4,
-            this.toolStripButton_DefineAxes});
-            this.toolStrip_Data.Location = new System.Drawing.Point(3, 3);
-            this.toolStrip_Data.Name = "toolStrip_Data";
-            this.toolStrip_Data.Size = new System.Drawing.Size(353, 25);
-            this.toolStrip_Data.TabIndex = 1;
-            this.toolStrip_Data.Text = "toolStrip1";
-            // 
-            // toolStripButton_OpenData
-            // 
-            this.toolStripButton_OpenData.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_OpenData.Image")));
-            this.toolStripButton_OpenData.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_OpenData.Name = "toolStripButton_OpenData";
-            this.toolStripButton_OpenData.Size = new System.Drawing.Size(56, 22);
-            this.toolStripButton_OpenData.Text = "Open";
-            this.toolStripButton_OpenData.Click += new System.EventHandler(this.toolStripButton_OpenData_Click);
-            // 
-            // toolStripButton_SaveData
-            // 
-            this.toolStripButton_SaveData.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_SaveData.Image")));
-            this.toolStripButton_SaveData.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_SaveData.Name = "toolStripButton_SaveData";
-            this.toolStripButton_SaveData.Size = new System.Drawing.Size(51, 22);
-            this.toolStripButton_SaveData.Text = "Save";
-            this.toolStripButton_SaveData.Click += new System.EventHandler(this.toolStripButton_SaveData_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripLabel_DataState
-            // 
-            this.toolStripLabel_DataState.Name = "toolStripLabel_DataState";
-            this.toolStripLabel_DataState.Size = new System.Drawing.Size(92, 22);
-            this.toolStripLabel_DataState.Text = "No Data Loaded";
-            // 
-            // toolStripButton_CommitData
-            // 
-            this.toolStripButton_CommitData.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_CommitData.Image")));
-            this.toolStripButton_CommitData.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_CommitData.Name = "toolStripButton_CommitData";
-            this.toolStripButton_CommitData.Size = new System.Drawing.Size(71, 22);
-            this.toolStripButton_CommitData.Text = "Commit";
-            this.toolStripButton_CommitData.Click += new System.EventHandler(this.toolStripButton_CommitData_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButton_DefineAxes
-            // 
-            this.toolStripButton_DefineAxes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_DefineAxes.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_DefineAxes.Image")));
-            this.toolStripButton_DefineAxes.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_DefineAxes.Name = "toolStripButton_DefineAxes";
-            this.toolStripButton_DefineAxes.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton_DefineAxes.Text = "Define Axes";
-            this.toolStripButton_DefineAxes.Click += new System.EventHandler(this.toolStripButton_DefineAxes_Click);
-            // 
             // tabPage_Series
             // 
             this.tabPage_Series.Controls.Add(this.listView_series);
@@ -474,6 +389,78 @@
             // 
             this.columnHeader_PointCount.Text = "Points";
             // 
+            // tabPage_DataSource
+            // 
+            this.tabPage_DataSource.Controls.Add(this.listView_DataSources);
+            this.tabPage_DataSource.Controls.Add(this.toolStrip1);
+            this.tabPage_DataSource.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_DataSource.Name = "tabPage_DataSource";
+            this.tabPage_DataSource.Size = new System.Drawing.Size(359, 217);
+            this.tabPage_DataSource.TabIndex = 3;
+            this.tabPage_DataSource.Text = "Data Sources";
+            this.tabPage_DataSource.UseVisualStyleBackColor = true;
+            // 
+            // listView_DataSources
+            // 
+            this.listView_DataSources.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader_DataSourceName,
+            this.columnHeader_DataSourceType,
+            this.columnHeader_DataSourceLocation});
+            this.listView_DataSources.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_DataSources.FullRowSelect = true;
+            this.listView_DataSources.Location = new System.Drawing.Point(0, 25);
+            this.listView_DataSources.MultiSelect = false;
+            this.listView_DataSources.Name = "listView_DataSources";
+            this.listView_DataSources.Size = new System.Drawing.Size(359, 192);
+            this.listView_DataSources.TabIndex = 1;
+            this.listView_DataSources.UseCompatibleStateImageBehavior = false;
+            this.listView_DataSources.View = System.Windows.Forms.View.Details;
+            this.listView_DataSources.DoubleClick += new System.EventHandler(this.listView_DataSources_DoubleClick);
+            // 
+            // columnHeader_DataSourceName
+            // 
+            this.columnHeader_DataSourceName.Text = "Name";
+            this.columnHeader_DataSourceName.Width = 100;
+            // 
+            // columnHeader_DataSourceType
+            // 
+            this.columnHeader_DataSourceType.Text = "Type";
+            this.columnHeader_DataSourceType.Width = 100;
+            // 
+            // columnHeader_DataSourceLocation
+            // 
+            this.columnHeader_DataSourceLocation.Text = "Location";
+            this.columnHeader_DataSourceLocation.Width = 250;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton_AddDataSource,
+            this.toolStripButton_RemoveDataSource});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(359, 25);
+            this.toolStrip1.TabIndex = 0;
+            // 
+            // toolStripButton_AddDataSource
+            // 
+            this.toolStripButton_AddDataSource.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_AddDataSource.Image")));
+            this.toolStripButton_AddDataSource.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_AddDataSource.Name = "toolStripButton_AddDataSource";
+            this.toolStripButton_AddDataSource.Size = new System.Drawing.Size(115, 22);
+            this.toolStripButton_AddDataSource.Text = "Add Data Source";
+            this.toolStripButton_AddDataSource.Click += new System.EventHandler(this.toolStripButton_AddDataSource_Click);
+            // 
+            // toolStripButton_RemoveDataSource
+            // 
+            this.toolStripButton_RemoveDataSource.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_RemoveDataSource.Image")));
+            this.toolStripButton_RemoveDataSource.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_RemoveDataSource.Name = "toolStripButton_RemoveDataSource";
+            this.toolStripButton_RemoveDataSource.Size = new System.Drawing.Size(136, 22);
+            this.toolStripButton_RemoveDataSource.Text = "Remove Data Source";
+            this.toolStripButton_RemoveDataSource.Click += new System.EventHandler(this.toolStripButton_RemoveDataSource_Click);
+            // 
             // textBox_Log
             // 
             this.textBox_Log.BackColor = System.Drawing.SystemColors.Control;
@@ -486,6 +473,7 @@
             this.textBox_Log.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox_Log.Size = new System.Drawing.Size(367, 117);
             this.textBox_Log.TabIndex = 0;
+            this.textBox_Log.WordWrap = false;
             // 
             // splitter_Log
             // 
@@ -508,6 +496,7 @@
             this.textBox_RuntimeREPL.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox_RuntimeREPL.Size = new System.Drawing.Size(367, 69);
             this.textBox_RuntimeREPL.TabIndex = 1;
+            this.textBox_RuntimeREPL.WordWrap = false;
             this.textBox_RuntimeREPL.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_RuntimeREPL_KeyDown);
             // 
             // panel1
@@ -879,18 +868,6 @@
             this.toolStripButton_ResetCamera.Text = "Reset Camera";
             this.toolStripButton_ResetCamera.Click += new System.EventHandler(this.toolStripButton_ResetCamera_Click);
             // 
-            // fileToolStripMenuItem1
-            // 
-            this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem1.Text = "File";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
             // CLRGraph_MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -906,6 +883,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CLRGraph_MainForm_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.splitContainer_Main.Panel1.ResumeLayout(false);
             this.splitContainer_Main.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).EndInit();
@@ -920,12 +899,11 @@
             this.tabPage_GraphScript.PerformLayout();
             this.toolStrip_GraphScript.ResumeLayout(false);
             this.toolStrip_GraphScript.PerformLayout();
-            this.tabPage_Data.ResumeLayout(false);
-            this.tabPage_Data.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
-            this.toolStrip_Data.ResumeLayout(false);
-            this.toolStrip_Data.PerformLayout();
             this.tabPage_Series.ResumeLayout(false);
+            this.tabPage_DataSource.ResumeLayout(false);
+            this.tabPage_DataSource.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.toolStripContainer.ContentPanel.ResumeLayout(false);
             this.toolStripContainer.TopToolStripPanel.ResumeLayout(false);
@@ -949,8 +927,6 @@
         private System.Windows.Forms.SplitContainer splitContainer_Main;
         private System.Windows.Forms.SplitContainer splitContainer_Right;
         private System.Windows.Forms.TabControl tabControl_sidebar;
-        private System.Windows.Forms.TabPage tabPage_Data;
-        private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.TabPage tabPage_GraphScript;
         private System.Windows.Forms.TextBox textBox_RuntimeREPL;
         private System.Windows.Forms.Panel panel1;
@@ -967,12 +943,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton_SaveAsGraphScript;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButton_CompileGraphScript;
-        private System.Windows.Forms.ToolStrip toolStrip_Data;
-        private System.Windows.Forms.ToolStripButton toolStripButton_OpenData;
-        private System.Windows.Forms.ToolStripButton toolStripButton_SaveData;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel_DataState;
-        private System.Windows.Forms.ToolStripButton toolStripButton_CommitData;
         private GLGraph glGraph;
         private System.Windows.Forms.ToolStrip toolStrip_RenderCameraControl;
         private System.Windows.Forms.ToolStripButton toolStripButton_RenderMode2D;
@@ -988,8 +958,6 @@
         private System.Windows.Forms.ToolStripMenuItem lineWidth3pxToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem lineWidth4pxToolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem lineWidth5pxToolStripMenuItem4;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripButton toolStripButton_DefineAxes;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_GraphType;
         private System.Windows.Forms.ToolStripMenuItem connectedLinesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pointsToolStripMenuItem;
@@ -1021,6 +989,15 @@
         private System.Windows.Forms.ToolStripMenuItem stippleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        public System.Windows.Forms.ToolStripStatusLabel FPSCounterLabel;
+        private System.Windows.Forms.TabPage tabPage_DataSource;
+        private System.Windows.Forms.ColumnHeader columnHeader_DataSourceName;
+        private System.Windows.Forms.ColumnHeader columnHeader_DataSourceType;
+        private System.Windows.Forms.ColumnHeader columnHeader_DataSourceLocation;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton toolStripButton_AddDataSource;
+        public System.Windows.Forms.ListView listView_DataSources;
+        private System.Windows.Forms.ToolStripButton toolStripButton_RemoveDataSource;
     }
 }
 

@@ -27,12 +27,6 @@ namespace CLRGraph
     {
         public static CLRGraph_MainForm self;
 
-        #region Graph Data Variables
-        DataGridState dataGridState = DataGridState.NotLoaded;
-
-        string xAxisColumn, yAxisColumn, zAxisColumn;
-        #endregion
-
         #region GraphScript Variables
         const string GraphScript_DefaultScript = "(set-data-points (range 0 10))";
         string GraphScript_LoadedFile = null;
@@ -53,9 +47,7 @@ namespace CLRGraph
 
             ClojureEngine.Initialize(textBox_Log);
 
-            GraphData_SetState(DataGridState.NotLoaded);
-            //textBox_GraphScript.Text = File.ReadAllText("examples/graphscripts/trig_tube.clj");
-            textBox_GraphScript.Text = File.ReadAllText("examples/graphscripts/test.clj");
+            textBox_GraphScript.Text = File.ReadAllText("examples/graphscripts/init.clj");
         }
 
         #region Form Events
@@ -63,200 +55,6 @@ namespace CLRGraph
         {
 
         }
-        #endregion
-
-        #region Graph Data
-        private void GraphData_Open()
-        {
-            //TODO: Filetype selector
-
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "CSV File (*.csv)|*.csv|All Files (*)|*";
-            ofd.Title = "Open Data File";
-            ofd.Multiselect = false;
-
-            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                return;
-
-            GraphData_SetState(DataGridState.Loading);
-
-            //Temp CSV parsing
-            string[] filedata = File.ReadAllText(ofd.FileName).Split('\r', '\n');
-
-            bool skipFirst = false;
-            if(MessageBox.Show("Does the first row contains column names?", "CSV File", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.Yes)
-            {
-                skipFirst = true;
-                string[] splline = filedata[0].Split(',');
-
-                for (int i = 0; i < splline.Length; i++)
-                    dataGridView.Columns.Add(splline[i], splline[i]);
-            }
-
-            foreach (string line in filedata)
-            {
-                if (skipFirst)
-                {
-                    skipFirst = false;
-                    continue;
-                }
-
-                if (line.Trim() == "")
-                    continue;
-
-                string[] splline = line.Split(',');
-
-                while (splline.Length > dataGridView.Columns.Count)
-                    dataGridView.Columns.Add("col" + (dataGridView.Columns.Count + 1), "Col " + (dataGridView.Columns.Count + 1));
-
-                dataGridView.Rows.Add(splline);
-
-                Application.DoEvents();
-            }
-
-            GraphData_SetState(DataGridState.NeedCommit);
-            GraphData_ShowAxisDefiner();
-        }
-
-        private void GraphData_ShowAxisDefiner()
-        {
-            List<string> columns = new List<string>();
-
-            for (int i = 0; i < dataGridView.Columns.Count; i++)
-                columns.Add(dataGridView.Columns[i].HeaderText);
-
-            AxisDefiner ad = new AxisDefiner(columns);
-
-            if (ad.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                return;
-
-            xAxisColumn = ad.xAxisColumn;
-            yAxisColumn = ad.yAxisColumn;
-            zAxisColumn = ad.zAxisColumn;
-
-            GraphData_SetState(DataGridState.NeedCommit);
-        }
-
-        private void GraphData_Save()
-        {
-            MessageBox.Show("Graph Data saving not yet implemented!", "Cannot Save", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void GraphData_Commit()
-        {
-
-            //TEMP
-            /*List<GraphPoint> graphPoints = new List<GraphPoint>();
-
-            for (float i = -10; i < 10; i += 0.1f)
-            {
-                graphPoints.Add(new GraphPoint(i, Math.Sin(i), Math.Cos(i)));
-            }
-
-            glGraph.SetDataPoints(graphPoints);*/
-
-            if (xAxisColumn == null && yAxisColumn == null && zAxisColumn == null)
-            {
-                MessageBox.Show("You need to define which columns are going to be used in the graph!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            GraphData_SetState(DataGridState.Committing);
-
-            List<GraphPoint> graphPoints = new List<GraphPoint>();
-
-            for (int i = 0; i < dataGridView.Rows.Count; i++)
-            {
-                double nX = i;
-                double nY = 0;
-                double nZ = 0;
-
-                if (xAxisColumn != null && dataGridView.Rows[i].Cells[xAxisColumn].Value != null)
-                    double.TryParse(dataGridView.Rows[i].Cells[xAxisColumn].Value.ToString(), out nX);
-
-                if (yAxisColumn != null && dataGridView.Rows[i].Cells[yAxisColumn].Value != null)
-                    double.TryParse(dataGridView.Rows[i].Cells[yAxisColumn].Value.ToString(), out nY);
-
-                if (zAxisColumn != null && dataGridView.Rows[i].Cells[zAxisColumn].Value != null)
-                    double.TryParse(dataGridView.Rows[i].Cells[zAxisColumn].Value.ToString(), out nZ);
-
-                graphPoints.Add(new GraphPoint(nX, nY, nZ));
-            }
-
-            GraphFuncs.SetDataPoints(graphPoints);
-
-            GraphData_SetState(DataGridState.Committed);
-        }
-
-        private void GraphData_SetState(DataGridState newState)
-        {
-            switch (newState)
-            {
-                case DataGridState.NotLoaded:
-                    toolStripLabel_DataState.Text = "Not Loaded";
-                    toolStripButton_CommitData.Enabled = true;
-                    break;
-
-                case DataGridState.Loading:
-                    toolStripLabel_DataState.Text = "Loading...";
-                    toolStripButton_CommitData.Enabled = false;
-                    break;
-
-                case DataGridState.NeedCommit:
-                    toolStripLabel_DataState.Text = "Not Committed";
-                    toolStripButton_CommitData.Enabled = true;
-                    break;
-
-                case DataGridState.Committing:
-                    toolStripLabel_DataState.Text = "Committing...";
-                    toolStripButton_CommitData.Enabled = false;
-                    break;
-
-                case DataGridState.Committed:
-                    toolStripLabel_DataState.Text = "Committed";
-                    toolStripButton_CommitData.Enabled = false;
-                    break;
-            }
-
-            dataGridState = newState;
-        }
-
-        private void toolStripButton_OpenData_Click(object sender, EventArgs e)
-        {
-            GraphData_Open();
-        }
-
-        private void toolStripButton_SaveData_Click(object sender, EventArgs e)
-        {
-            GraphData_Save();
-        }
-
-        private void toolStripButton_CommitData_Click(object sender, EventArgs e)
-        {
-            GraphData_Commit();
-        }
-
-        private void toolStripButton_DefineAxes_Click(object sender, EventArgs e)
-        {
-            GraphData_ShowAxisDefiner();
-        }
-
-        private void dataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            GraphData_SetState(DataGridState.NeedCommit);
-        }
-
-        private void dataGridView_UserAddedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            GraphData_SetState(DataGridState.NeedCommit);
-        }
-
-        private void dataGridView_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            GraphData_SetState(DataGridState.NeedCommit);
-        }
-
-
         #endregion
 
         #region Graph Script
@@ -423,7 +221,8 @@ namespace CLRGraph
         {
             if (sender is ToolStripMenuItem)
             {
-                DataSeriesFuncs.SetSeriesLineWidthAll(float.Parse(((ToolStripMenuItem)sender).Tag.ToString()));
+                DataSeries_Funcs.SetSeriesLineWidthAll(float.Parse(((ToolStripMenuItem)sender).Tag.ToString()));
+                GLGraph.Redraw(true);
             }
         }
 
@@ -432,38 +231,44 @@ namespace CLRGraph
             if (sender is ToolStripMenuItem)
             {
                 if (sender == pointsToolStripMenuItem)
-                    DataSeriesFuncs.SetSeriesDrawModeAll(DrawMode.Points);
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Points);
                 else if (sender == linesToolStripMenuItem)
-                    DataSeriesFuncs.SetSeriesDrawModeAll(DrawMode.Lines);
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Lines);
                 else if (sender == trianglesToolStripMenuItem)
-                    DataSeriesFuncs.SetSeriesDrawModeAll(DrawMode.Triangles);
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Triangles);
                 else if (sender == quadsToolStripMenuItem)
-                    DataSeriesFuncs.SetSeriesDrawModeAll(DrawMode.Quads);
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Quads);
                 else if (sender == connectedLinesToolStripMenuItem)
-                    DataSeriesFuncs.SetSeriesDrawModeAll(DrawMode.ConnectedLines);
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.ConnectedLines);
                 else if (sender == histogramToolStripMenuItem)
-                    DataSeriesFuncs.SetSeriesDrawModeAll(DrawMode.Histogram);
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Histogram);
+
+                GLGraph.Redraw(true);
             }
         }
 
         private void setGraphColorMode(object sender, EventArgs e)
         {
             if (sender == solidLightingToolStripMenuItem)
-                DataSeriesFuncs.SetSeriesColorModeAll(ColorMode.Solid);
+                DataSeries_Funcs.SetSeriesColorModeAll(ColorMode.Solid);
             else if (sender == distanceFogToolStripMenuItem)
-                DataSeriesFuncs.SetSeriesColorModeAll(ColorMode.DistanceFog);
+                DataSeries_Funcs.SetSeriesColorModeAll(ColorMode.DistanceFog);
             else if (sender == worldSpaceCoordsToolStripMenuItem)
-                DataSeriesFuncs.SetSeriesColorModeAll(ColorMode.WorldCoords);
+                DataSeries_Funcs.SetSeriesColorModeAll(ColorMode.WorldCoords);
             else if (sender == boundingCoordsToolStripMenuItem)
-                DataSeriesFuncs.SetSeriesColorModeAll(ColorMode.BoundsCoords);
+                DataSeries_Funcs.SetSeriesColorModeAll(ColorMode.BoundsCoords);
+
+            GLGraph.Redraw(true);
         }
         
         private void setGraphTransparencyMode(object sender, EventArgs e)
         {
             if (sender == solidToolStripMenuItem)
-                DataSeriesFuncs.SetSeriesTransparencyModeAll(TransparencyMode.Solid);
+                DataSeries_Funcs.SetSeriesTransparencyModeAll(TransparencyMode.Solid);
             else if(sender == transparentToolStripMenuItem)
-                DataSeriesFuncs.SetSeriesTransparencyModeAll(TransparencyMode.Transparent);
+                DataSeries_Funcs.SetSeriesTransparencyModeAll(TransparencyMode.Transparent);
+
+            GLGraph.Redraw(true);
         }
 
 
@@ -484,7 +289,7 @@ namespace CLRGraph
         private void tabControl_sidebar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tabControl_sidebar.SelectedTab == tabPage_Series)
-                DataSeriesFuncs.UpdateSeriesInfoInUI();
+                DataSeries_Funcs.UpdateSeriesInfoInUI();
         }
 
         public bool listview_series_disable_ItemChecked = false;
@@ -504,9 +309,53 @@ namespace CLRGraph
             for(int i = 0; i < listView_series.Items.Count; i++)
                 listView_series.Items[i].SubItems[1].Text = "";
 
-            DataSeriesFuncs.SetCurrentSeries((DataSeries)listView_series.SelectedItems[0].Tag);
+            DataSeries_Funcs.SetCurrentSeries((DataSeries)listView_series.SelectedItems[0].Tag);
             listView_series.SelectedItems[0].SubItems[1].Text = "✓";
         }
         #endregion
+
+        #region Data Source Properties
+        private void toolStripButton_AddDataSource_Click(object sender, EventArgs e)
+        {
+            //Todo: Proper sources dialog
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Multiselect = false;
+            ofd.Filter = "Any File (*.*)|*.*";
+
+            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            CSVDataSource source = new CSVDataSource(null, ofd.FileName);
+
+            DataSource.UpdateDataSourceInfoInUI();
+        }
+
+        private void toolStripButton_RemoveDataSource_Click(object sender, EventArgs e)
+        {
+            if (listView_DataSources.SelectedItems.Count < 1)
+            {
+                MessageBox.Show("No data source is selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure you want to remove this data source reference?", "Remove Data Source", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == System.Windows.Forms.DialogResult.No)
+                return;
+
+            DataSource toDelete = ((DataSource)listView_DataSources.SelectedItems[0].Tag);
+            DataSource.DataSources.Remove(toDelete.SourceName);
+            toDelete.Dispose();
+
+            DataSource.UpdateDataSourceInfoInUI();
+        }
+
+        private void listView_DataSources_DoubleClick(object sender, EventArgs e)
+        {
+            if (listView_DataSources.SelectedItems.Count < 1)
+                return;
+
+            ((DataSource)listView_DataSources.SelectedItems[0].Tag).ShowDataSeriesConfig();
+        }
+        #endregion
+
     }
 }

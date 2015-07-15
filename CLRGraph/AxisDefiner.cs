@@ -13,19 +13,35 @@ namespace CLRGraph
     public partial class AxisDefiner : Form
     {
         public AxisDefiner(List<String> columns)
+            : this(columns, null, null, null)
+        {
+        }
+
+        public AxisDefiner(List<String> columns, string currentX, string currentY, string currentZ)
         {
             InitializeComponent();
 
             columns.Insert(0, "**NONE**");
+            int selectedX = 0, selectedY = 0, selectedZ = 0;
 
             for (int i = 0; i < columns.Count; i++)
             {
                 listBox_XAxis.Items.Add(columns[i]);
+                if (columns[i] == currentX)
+                    selectedX = i;
+
                 listBox_YAxis.Items.Add(columns[i]);
+                if (columns[i] == currentY)
+                    selectedY = i;
+
                 listBox_ZAxis.Items.Add(columns[i]);
+                if (columns[i] == currentZ)
+                    selectedZ = i;
             }
 
-            listBox_XAxis.SelectedIndex = listBox_YAxis.SelectedIndex = listBox_ZAxis.SelectedIndex = 0;
+            listBox_XAxis.SelectedIndex = selectedX;
+            listBox_YAxis.SelectedIndex = selectedY;
+            listBox_ZAxis.SelectedIndex = selectedZ;
         }
 
         public string xAxisColumn, yAxisColumn, zAxisColumn;

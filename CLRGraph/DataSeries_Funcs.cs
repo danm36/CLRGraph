@@ -1,4 +1,5 @@
-﻿using System;
+﻿using clojure.lang;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +11,7 @@ using System.Windows.Forms;
 namespace CLRGraph
 {
     [ClojureClass]
-    public static class DataSeriesFuncs
+    public static class DataSeries_Funcs
     {
         static List<DataSeries> AllDataSeries { get { return DataSeries.AllDataSeries; } }
         static int CurrentDataSeries { get { return DataSeries.CurrentDataSeries; } set { DataSeries.CurrentDataSeries = value; } }
@@ -36,9 +37,15 @@ namespace CLRGraph
                 items[i] = lvi;
             }
 
+            int topItemIndex = CLRGraph_MainForm.self.listView_series.TopItem == null ? 0 : CLRGraph_MainForm.self.listView_series.TopItem.Index;
             CLRGraph_MainForm.self.listView_series.Items.Clear();
             CLRGraph_MainForm.self.listView_series.Items.AddRange(items);
             CLRGraph_MainForm.self.listview_series_disable_ItemChecked = false;
+
+            if(CLRGraph_MainForm.self.listView_series.Items.Count > 0)
+                CLRGraph_MainForm.self.listView_series.TopItem = CLRGraph_MainForm.self.listView_series.Items[topItemIndex];
+
+            GLGraph.Redraw();
         }
 
         #region Reset and Clear
@@ -51,7 +58,7 @@ namespace CLRGraph
         [ClojureStaticMethod("clear-series-points", "Clears all points from the currently selected series.")]
         public static void ClearSeriesPoints()
         {
-            DataSeriesFuncs.GetCurrentDataSeries().ClearDataPoints();
+            DataSeries_Funcs.GetCurrentDataSeries().ClearDataPoints();
             GLGraph.self.UpdateGraphAxes();
             GLGraph.self.UpdateMatrices(true);
         }
@@ -175,22 +182,42 @@ namespace CLRGraph
         #endregion
 
         #region Add New Series
-        [ClojureStaticMethod("add-new-series", "Creates and returns a new series, optionally with a supplied name and color.")]
+        [ClojureStaticMethod("add-new-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color.")]
         public static DataSeries AddNewSeries()
         {
-            return AddNewSeries(null, null);
+            return AddNewSeries(null, (Color?)null);
         }
 
-        [ClojureStaticMethod("add-new-series", "Creates and returns a new series, optionally with a supplied name and color.")]
+        [ClojureStaticMethod("add-new-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color.")]
         public static DataSeries AddNewSeries(string name)
         {
             return AddNewSeries(name, null);
         }
 
-        [ClojureStaticMethod("add-new-series", "Creates and returns a new series, optionally with a supplied name and color.")]
+        [ClojureStaticMethod("add-new-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color.")]
         public static DataSeries AddNewSeries(string name, Color? color)
         {
             DataSeries ds = new DataSeries(name, color);
+            UpdateSeriesInfoInUI();
+            return ds;
+        }
+
+        [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color.")]
+        public static DataSeries AddNewSeries(PersistentVector initialPoints)
+        {
+            return AddNewSeries(initialPoints, null, null);
+        }
+
+        [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color.")]
+        public static DataSeries AddNewSeries(PersistentVector initialPoints, string name)
+        {
+            return AddNewSeries(initialPoints, name, null);
+        }
+
+        [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with a supplied name and color.")]
+        public static DataSeries AddNewSeries(PersistentVector initialPoints, string name, Color? color)
+        {
+            DataSeries ds = new DataSeries(initialPoints, name, color);
             UpdateSeriesInfoInUI();
             return ds;
         }
@@ -200,7 +227,7 @@ namespace CLRGraph
         [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with a supplied name and color. This series is also set to the current series.")]
         public static DataSeries AddNewCurrentDataSeries()
         {
-            return AddNewCurrentDataSeries(null, null);
+            return AddNewCurrentDataSeries(null, (Color?)null);
         }
 
         [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with a supplied name and color. This series is also set to the current series.")]
@@ -213,6 +240,28 @@ namespace CLRGraph
         public static DataSeries AddNewCurrentDataSeries(string name, Color? color)
         {
             DataSeries ds = new DataSeries(name, color);
+            CurrentDataSeries = AllDataSeries.Count - 1;
+            UpdateSeriesInfoInUI();
+            return ds;
+        }
+
+        [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color. This series is also set to the current series.")]
+        public static DataSeries AddNewCurrentDataSeries(PersistentVector initialPoints)
+        {
+            return AddNewCurrentDataSeries(initialPoints, null, null);
+        }
+
+        [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with an initial set of points, supplied name and color. This series is also set to the current series.")]
+        public static DataSeries AddNewCurrentDataSeries(PersistentVector initialPoints, string name)
+        {
+            return AddNewCurrentDataSeries(initialPoints, name, null);
+        }
+
+
+        [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with a supplied name and color. This series is also set to the current series.")]
+        public static DataSeries AddNewCurrentDataSeries(PersistentVector initialPoints, string name, Color? color)
+        {
+            DataSeries ds = new DataSeries(initialPoints, name, color);
             CurrentDataSeries = AllDataSeries.Count - 1;
             UpdateSeriesInfoInUI();
             return ds;
@@ -240,6 +289,7 @@ namespace CLRGraph
         }
         #endregion
 
+        #region Merge Series
         [ClojureStaticMethod("merge-series", "Merges two or more series into one.")]
         public static DataSeries MergeSeries(IList seriesList)
         {
@@ -290,7 +340,22 @@ namespace CLRGraph
 
             return first;
         }
+        #endregion
 
+        #region Rename Series
+        [ClojureStaticMethod("rename-series", "Renames a given series.")]
+        public static DataSeries RenameSeries(string newname)
+        {
+            return RenameSeries(GetCurrentDataSeries(), newname);
+        }
+
+        [ClojureStaticMethod("rename-series", "Renames a given series.")]
+        public static DataSeries RenameSeries(DataSeries series, string newname)
+        {
+            series.SetName(newname);
+            return series;
+        }
+        #endregion
 
         #region Get Point Counts
         [ClojureStaticMethod("get-series-point-count", "Returns the number of points in the given series.")]

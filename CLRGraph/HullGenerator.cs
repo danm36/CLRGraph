@@ -94,13 +94,13 @@ namespace CLRGraph
         [ClojureStaticMethod("make-hull", "Creates a hull from the given series with the given number of iterations. If no series is supplied, the current series is used. If no iteration count is supplied, then the default of 16 iterations will be used")]
         public static DataSeries CreateHullFromSeries()
         {
-            return CreateHullFromSeries(DataSeriesFuncs.GetCurrentDataSeries(), Default_MaxIterationCount);
+            return CreateHullFromSeries(DataSeries_Funcs.GetCurrentDataSeries(), Default_MaxIterationCount);
         }
 
         [ClojureStaticMethod("make-hull", "Creates a hull from the given series with the given number of iterations. If no series is supplied, the current series is used. If no iteration count is supplied, then the default of 16 iterations will be used")]
         public static DataSeries CreateHullFromSeries(int iterations)
         {
-            return CreateHullFromSeries(DataSeriesFuncs.GetCurrentDataSeries(), iterations);
+            return CreateHullFromSeries(DataSeries_Funcs.GetCurrentDataSeries(), iterations);
         }
 
         [ClojureStaticMethod("make-hull", "Creates a hull from the given series with the given number of iterations. If no series is supplied, the current series is used. If no iteration count is supplied, then the default of 16 iterations will be used")]
