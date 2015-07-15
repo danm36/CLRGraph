@@ -83,6 +83,7 @@
     <None Include="examples\graphscripts\data_sources.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="examples\graphscripts\init.clj" />
     <None Include="examples\graphscripts\JCMB_2015_Jan.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -133,9 +134,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="examples\graphscripts\surface_function.clj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="examples\graphscripts\test.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="examples\graphscripts\trig_tube.clj">
