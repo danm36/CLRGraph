@@ -18,7 +18,7 @@ CLRGraph is a C# and Clojure powered plotter and grapher, initially developed by
 * Generate convex hulls from a given point set and [upcoming] export them to 3D model and printer formats.
 * A wide array of point, series and graph parsing functions.
 * Create new clojure functions in C# via reflection.
-* 
+
 ## Upcoming Features
 * Create data importers and exported via plugins.
 * Send data to CLRGraph over a TCP network connection.
