@@ -18,32 +18,42 @@ namespace CLRGraph
 
         public static void UpdateSeriesInfoInUI()
         {
-            CLRGraph_MainForm.self.listview_series_disable_ItemChecked = true;
-            ListViewItem[] items = new ListViewItem[AllDataSeries.Count];
-
-            for (int i = 0; i < AllDataSeries.Count; i++)
+            if (AllDataSeries.Count > 0)
             {
-                ListViewItem lvi = new ListViewItem();
-                lvi.Checked = !AllDataSeries[i].Hidden;
-                lvi.Tag = AllDataSeries[i];
-                lvi.UseItemStyleForSubItems = false;
+                CLRGraph_MainForm.self.listview_series_disable_ItemChecked = true;
+                ListViewItem[] items = new ListViewItem[AllDataSeries.Count];
 
-                lvi.SubItems.Add(CurrentDataSeries == i ? "✓" : "");
-                lvi.SubItems.Add((i + 1).ToString());
-                lvi.SubItems.Add("", AllDataSeries[i].DrawColor, AllDataSeries[i].DrawColor, new Font("Verdana", 1));
-                lvi.SubItems.Add(AllDataSeries[i].Name);
-                lvi.SubItems.Add(AllDataSeries[i].GetPointCount().ToString());
+                for (int i = 0; i < AllDataSeries.Count; i++)
+                {
+                    ListViewItem lvi = new ListViewItem();
+                    lvi.Checked = !AllDataSeries[i].Hidden;
+                    lvi.Tag = AllDataSeries[i];
+                    lvi.UseItemStyleForSubItems = false;
 
-                items[i] = lvi;
+                    lvi.SubItems.Add(CurrentDataSeries == i ? "✓" : "");
+                    lvi.SubItems.Add((i + 1).ToString());
+                    lvi.SubItems.Add("", AllDataSeries[i].DrawColor, AllDataSeries[i].DrawColor, new Font("Verdana", 1));
+                    lvi.SubItems.Add(AllDataSeries[i].Name);
+                    lvi.SubItems.Add(AllDataSeries[i].GetPointCount().ToString());
+
+                    items[i] = lvi;
+                }
+
+                int topItemIndex = CLRGraph_MainForm.self.listView_series.TopItem == null ? 0 : CLRGraph_MainForm.self.listView_series.TopItem.Index;
+                CLRGraph_MainForm.self.listView_series.Items.Clear();
+                CLRGraph_MainForm.self.listView_series.Items.AddRange(items);
+                CLRGraph_MainForm.self.listview_series_disable_ItemChecked = false;
+
+
+                if (CLRGraph_MainForm.self.listView_series.Items.Count > 0)
+                {
+                    try { CLRGraph_MainForm.self.listView_series.TopItem = CLRGraph_MainForm.self.listView_series.Items[Math.Max(topItemIndex, 0)]; } catch { }
+                }
             }
-
-            int topItemIndex = CLRGraph_MainForm.self.listView_series.TopItem == null ? 0 : CLRGraph_MainForm.self.listView_series.TopItem.Index;
-            CLRGraph_MainForm.self.listView_series.Items.Clear();
-            CLRGraph_MainForm.self.listView_series.Items.AddRange(items);
-            CLRGraph_MainForm.self.listview_series_disable_ItemChecked = false;
-
-            if(CLRGraph_MainForm.self.listView_series.Items.Count > 0)
-                CLRGraph_MainForm.self.listView_series.TopItem = CLRGraph_MainForm.self.listView_series.Items[topItemIndex];
+            else
+            {
+                CLRGraph_MainForm.self.listView_series.Items.Clear();
+            }
 
             GLGraph.Redraw();
         }

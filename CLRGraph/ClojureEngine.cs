@@ -161,7 +161,12 @@ namespace CLRGraph
                     List<string> paramNames = new List<string>();
 
                     for (int p = 0; p < parameters.Length; p++)
-                        paramNames.Add(parameters[p].Name);
+                    {
+                        if(p == parameters.Length - 1 && typeof(ISeq).IsAssignableFrom(parameters[p].ParameterType))
+                            paramNames.Add("& " + parameters[p].Name);
+                        else
+                            paramNames.Add(parameters[p].Name);
+                    }
 
                     AddRuntimeMethod(attr.Name, attr.DocString, parameters.Length, clojureCode, paramNames);
                 }
@@ -195,13 +200,21 @@ namespace CLRGraph
                 {
                     clojureMethods.Append("([");
 
-                    string parameters = "";
+                    string parametersIn = "";
+                    string parametersOut = "";
                     for (int i = 0; i < arities.Value.ParamNames.Count; i++)
-                        parameters += arities.Value.ParamNames[i] + " ";
+                    {
+                        parametersIn += arities.Value.ParamNames[i] + " ";
 
-                    parameters = parameters.Trim();
+                        if (arities.Value.ParamNames[i][0] == '&')
+                            parametersOut += arities.Value.ParamNames[i].Substring(1).Trim();
+                        else
+                            parametersOut += arities.Value.ParamNames[i];
 
-                    clojureMethods.Append(parameters + "] (" + arities.Value.ExecCode + " " + parameters + "))");
+                        parametersOut += " ";
+                    }
+
+                    clojureMethods.Append(parametersIn.Trim() + "] (" + arities.Value.ExecCode + " " + parametersOut.Trim() + "))");
 
                 }
                 clojureMethods.Append(") ");
@@ -216,13 +229,17 @@ namespace CLRGraph
             logControl = newLogControl;
         }
 
-        public static void Log(string toLog)
+        public static void Log(object toLog)
         {
-            if (toLog == "")
+            if (toLog == null)
                 return;
 
-            logControl.AppendText(toLog);
-            if (!toLog.EndsWith("\r\n"))
+            string logstr = toLog.ToString();
+            if(logstr == "")
+                return;
+
+            logControl.AppendText(logstr);
+            if (!logstr.EndsWith("\r\n"))
                 logControl.AppendText("\r\n");
         }
 

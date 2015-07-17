@@ -21,4 +21,4 @@
 ;;;; Source: http://www.ed.ac.uk/schools-departments/geosciences/weather-station/download-weather-data
 ;;;; Modified to add the day-of-year column.
 
-(set-data-points (get-data-source-points "DataSource_1"))
+(set-series-data-source "DataSource_1")

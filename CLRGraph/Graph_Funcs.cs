@@ -17,6 +17,7 @@ namespace CLRGraph
         public static void ResetGraph()
         {
             DataSeries.ResetAll();
+            ClojureDefinedUI.Reset();
 
             GLGraph.self.SetBackgroundColor(Color.White);
             GLGraph.self.UpdateGraphAxes();
@@ -75,7 +76,7 @@ namespace CLRGraph
         [ClojureStaticMethod("make-data-points", "Creates and returns a set of points from the given values")]
         public static List<GraphPoint> MakeDataPoints(IList xVals, IList yVals)
         {
-            return MakeDataPoints(xVals, yVals);
+            return MakeDataPoints(xVals, yVals, null);
         }
 
         [ClojureStaticMethod("make-data-points", "Creates and returns a set of points from the given values")]
@@ -309,7 +310,7 @@ namespace CLRGraph
             GLGraph.self.UpdateGraphAxes();
             GLGraph.self.UpdateMatrices(true);
 
-            ClojureEngine.Log("Added " + added + " points to series '" + currentSeries.Name + "' (" + DataSeries_Funcs.TotalPointCount() + " total points in graph)");
+            //ClojureEngine.Log("Added " + added + " points to series '" + currentSeries.Name + "' (" + DataSeries_Funcs.TotalPointCount() + " total points in graph)");
         }
 
         [ClojureStaticMethod("set-data-points", "Sets the points of the current series to the given points")]

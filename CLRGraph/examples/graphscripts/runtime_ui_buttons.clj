@@ -19,6 +19,7 @@
 ;; You can also add the buttons using add-ui-buttons, as detailed below
 ;; The format is very similar to add-ui-button, except all buttons are
 ;; in a vector as a label/function pair
+;; Note that in this way, all the buttons are grouped together on a row
 (add-ui-buttons ["Red" #(set-series-color Color/Red)
 		"Green" #(set-series-color Color/Green)
 		"Blue" #(set-series-color Color/Blue)

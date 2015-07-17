@@ -66,6 +66,10 @@
     </Compile>
     <Compile Include="Box.cs" />
     <Compile Include="ClojureEngine.cs" />
+    <Compile Include="ClojureDefinedUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ClojureDefinedUI_Funcs.cs" />
     <Compile Include="CLRGraph_MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,7 +87,9 @@
     <None Include="examples\graphscripts\data_sources.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="examples\graphscripts\init.clj" />
+    <None Include="examples\graphscripts\init.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="examples\graphscripts\JCMB_2015_Jan.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -135,6 +141,12 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="examples\graphscripts\pacman.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\runtime_ui_buttons.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\runtime_ui_sliders.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="examples\graphscripts\series_averages.clj">
