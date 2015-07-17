@@ -318,15 +318,19 @@ namespace CLRGraph
         private void toolStripButton_AddDataSource_Click(object sender, EventArgs e)
         {
             //Todo: Proper sources dialog
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Multiselect = false;
-            ofd.Filter = "Any File (*.*)|*.*";
+            DataSource_Selector selector = new DataSource_Selector();
 
-            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            if (selector.ShowDialog() != System.Windows.Forms.DialogResult.OK || selector.SourceType == null)
                 return;
 
-            CSVDataSource source = new CSVDataSource(null, ofd.FileName);
+            DataSource source = (DataSource)Activator.CreateInstance(selector.SourceType, selector.SourceName);
 
+            if (!source.ShowDataSourceSelector())
+                return;
+
+            //Show name select
+
+            DataSource.DataSources.Add(source.SourceName, source);
             DataSource.UpdateDataSourceInfoInUI();
         }
 

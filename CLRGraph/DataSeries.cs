@@ -66,7 +66,7 @@ namespace CLRGraph
         {
             for (int i = 0; i < AllDataSeries.Count; i++)
             {
-                AllDataSeries[i].ClearDataPoints();
+                AllDataSeries[i].Reset();
                 AllDataSeries[i].Dispose();
             }
 
@@ -90,6 +90,11 @@ namespace CLRGraph
         public TransparencyMode TransparencyMode { get; private set; }
         public bool Hidden { get; private set; }
         public float LineWidth { get; private set; }
+
+        private DataSource dataSource = null;
+        private Timer dataSourcePollTimer = null;
+        private const int dataSourcePollTimerMin = 10;
+        private int lastPollInterval = 1000;
 
         private uint[] indices = null;
 
@@ -232,6 +237,14 @@ namespace CLRGraph
             DrawShader = newShader;
         }
 
+        public DataSeries Reset()
+        {
+            StopDataSourcePoll();
+            ClearDataPoints();
+
+            return this;
+        }
+
         public DataSeries ClearDataPoints()
         {
             DataPoints = PersistentVector.EMPTY;
@@ -326,6 +339,73 @@ namespace CLRGraph
 
                 curPoint.pendingEdges.Clear();
             }
+        }
+
+        public DataSeries SetDataSource(DataSource newSource)
+        {
+            StopDataSourcePoll();
+            dataSource = newSource;
+            UpdatePointsFromDataSource();
+            return this;
+        }
+
+        public DataSeries SetDataSource(DataSource newSource, double pollInterval)
+        {
+            bool timerWasRunning = dataSourcePollTimer == null ? false : dataSourcePollTimer.Enabled;
+
+            StopDataSourcePoll();
+            dataSource = newSource;
+            lastPollInterval = Math.Max((int)Math.Round(pollInterval * 1000), dataSourcePollTimerMin);
+            UpdatePointsFromDataSource();
+
+            if (timerWasRunning)
+                StartDataSourcePoll();
+
+            return this;
+        }
+
+        public DataSeries StartDataSourcePoll()
+        {
+            StopDataSourcePoll();
+            dataSourcePollTimer = new Timer();
+            dataSourcePollTimer.Interval = lastPollInterval;
+            dataSourcePollTimer.Tick += (s, e) =>
+            {
+                UpdatePointsFromDataSource();
+            };
+            dataSourcePollTimer.Start();
+            return this;
+        }
+
+        public DataSeries StartDataSourcePoll(double newInterval)
+        {
+            lastPollInterval = Math.Max((int)Math.Round(newInterval * 1000), dataSourcePollTimerMin);
+            return StartDataSourcePoll();
+        }
+
+        public DataSeries StopDataSourcePoll()
+        {
+            if (dataSourcePollTimer != null)
+            {
+                dataSourcePollTimer.Stop();
+                dataSourcePollTimer.Enabled = false;
+                dataSourcePollTimer = null;
+            }
+
+            return this;
+        }
+
+        public void UpdatePointsFromDataSource()
+        {
+            if (dataSource == null)
+            {
+                if (dataSourcePollTimer != null)
+                    StopDataSourcePoll();
+
+                return;
+            }
+
+            SetDataPoints(dataSource.GetData());
         }
 
         private void UpdateVertexVBO()

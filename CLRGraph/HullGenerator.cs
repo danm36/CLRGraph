@@ -188,6 +188,12 @@ namespace CLRGraph
                 }
             }
 
+            if (farthestBaseFace == null) //2D series
+            {
+                ClojureEngine.Log("[HULL BUILD] Series is 2D, and the hull builder cannot currently work with 2D data sets");
+                return null;
+            }
+
             if (bFlipWinding)
             {
                 GraphPoint temp = baseLine1;

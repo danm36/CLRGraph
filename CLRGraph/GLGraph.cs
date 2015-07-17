@@ -285,7 +285,7 @@ namespace CLRGraph
 
         public static void Redraw(bool simpleRedraw = false)
         {
-            self.Focus();
+            //self.Focus();
             self.GL_NeedRedraw = true;
             self.GL_SimpleRedraw = simpleRedraw;
         }
@@ -349,7 +349,7 @@ namespace CLRGraph
             GL_SimpleRedraw = false;
 
             fpsStopwatch.Stop();
-            CLRGraph_MainForm.self.FPSCounterLabel.Text = "FPS: " + (1.0 / fpsStopwatch.Elapsed.TotalSeconds);
+            CLRGraph_MainForm.self.FPSCounterLabel.Text = "Last FPS: " + (1.0 / fpsStopwatch.Elapsed.TotalSeconds);
         }
 
         #region Mouse Control

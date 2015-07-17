@@ -172,8 +172,8 @@
             // FPSCounterLabel
             // 
             this.FPSCounterLabel.Name = "FPSCounterLabel";
-            this.FPSCounterLabel.Size = new System.Drawing.Size(42, 17);
-            this.FPSCounterLabel.Text = "FPS: ??";
+            this.FPSCounterLabel.Size = new System.Drawing.Size(66, 17);
+            this.FPSCounterLabel.Text = "Last FPS: ??";
             // 
             // splitContainer_Main
             // 

@@ -96,7 +96,14 @@
     <Compile Include="DataSeries_AnalysisFuncs.cs" />
     <Compile Include="DataSeries_Funcs.cs" />
     <Compile Include="DataSource.cs" />
+    <Compile Include="DataSource_BasicSources.cs" />
     <Compile Include="DataSource_Funcs.cs" />
+    <Compile Include="DataSource_Selector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource_Selector.Designer.cs">
+      <DependentUpon>DataSource_Selector.cs</DependentUpon>
+    </Compile>
     <Compile Include="GLGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -110,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CLRGraph_MainForm.resx">
       <DependentUpon>CLRGraph_MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource_Selector.resx">
+      <DependentUpon>DataSource_Selector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GLGraph.resx">
       <DependentUpon>GLGraph.cs</DependentUpon>

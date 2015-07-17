@@ -357,6 +357,95 @@ namespace CLRGraph
         }
         #endregion
 
+        #region Set Data Source
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(string sourceName)
+        {
+            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName));
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(string sourceName, double interval)
+        {
+            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName), interval);
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(string sourceName, DataSeries series)
+        {
+            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName), series);
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(string sourceName, DataSeries series, double interval)
+        {
+            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName), series, interval);
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(DataSource source)
+        {
+            return SetDataSource(source, GetCurrentDataSeries());
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(DataSource source, double interval)
+        {
+            return SetDataSource(source, GetCurrentDataSeries(), interval);
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(DataSource source, DataSeries series)
+        {
+            return series.SetDataSource(source);
+        }
+
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSource(DataSource source, DataSeries series, double interval)
+        {
+            return series.SetDataSource(source, interval);
+        }
+        #endregion
+
+        #region Start/Stop Source Poll Timers
+        [ClojureStaticMethod("start-series-poll", "Starts the data source poll timer on a series, optionally with a new interval.")]
+        public static DataSeries StartSeriesPollTimer()
+        {
+            return GetCurrentDataSeries().StartDataSourcePoll();
+        }
+
+        [ClojureStaticMethod("start-series-poll", "Starts the data source poll timer on a series, optionally with a new interval.")]
+        public static DataSeries StartSeriesPollTimer(double interval)
+        {
+            return GetCurrentDataSeries().StartDataSourcePoll(interval);
+        }
+
+        [ClojureStaticMethod("start-series-poll", "Starts the data source poll timer on a series, optionally with a new interval.")]
+        public static DataSeries StartSeriesPollTimer(DataSeries series)
+        {
+            return series.StartDataSourcePoll();
+        }
+
+        [ClojureStaticMethod("start-series-poll", "Starts the data source poll timer on a series, optionally with a new interval.")]
+        public static DataSeries StartSeriesPollTimer(DataSeries series, double interval)
+        {
+            return series.StartDataSourcePoll(interval);
+        }
+
+        [ClojureStaticMethod("stop-series-poll", "Stops the data source poll timer on a series.")]
+        public static DataSeries StopSeriesPollTimer()
+        {
+            return GetCurrentDataSeries().StopDataSourcePoll();
+        }
+
+        [ClojureStaticMethod("stop-series-poll", "Stops the data source poll timer on a series.")]
+        public static DataSeries StopSeriesPollTimer(DataSeries series)
+        {
+            return series.StopDataSourcePoll();
+        }
+        #endregion
+
+
         #region Get Point Counts
         [ClojureStaticMethod("get-series-point-count", "Returns the number of points in the given series.")]
         public static int GetSeriesPointCount(DataSeries series)
