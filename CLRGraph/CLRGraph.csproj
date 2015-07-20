@@ -110,6 +110,12 @@
     <Compile Include="DataSource_Selector.Designer.cs">
       <DependentUpon>DataSource_Selector.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSource_TomsErosionPatterns.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource_TomsErosionPatterns.Designer.cs">
+      <DependentUpon>DataSource_TomsErosionPatterns.cs</DependentUpon>
+    </Compile>
     <Compile Include="GLGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -121,11 +127,17 @@
     <EmbeddedResource Include="AxisDefiner.resx">
       <DependentUpon>AxisDefiner.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ClojureDefinedUI.resx">
+      <DependentUpon>ClojureDefinedUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CLRGraph_MainForm.resx">
       <DependentUpon>CLRGraph_MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource_Selector.resx">
       <DependentUpon>DataSource_Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource_TomsErosionPatterns.resx">
+      <DependentUpon>DataSource_TomsErosionPatterns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GLGraph.resx">
       <DependentUpon>GLGraph.cs</DependentUpon>

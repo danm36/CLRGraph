@@ -342,8 +342,8 @@ namespace CLRGraph
                 return;
             }
 
-            if (MessageBox.Show("Are you sure you want to remove this data source reference?", "Remove Data Source", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == System.Windows.Forms.DialogResult.No)
-                return;
+            //if (MessageBox.Show("Are you sure you want to remove this data source reference?", "Remove Data Source", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == System.Windows.Forms.DialogResult.No)
+            //    return;
 
             DataSource toDelete = ((DataSource)listView_DataSources.SelectedItems[0].Tag);
             DataSource.DataSources.Remove(toDelete.SourceName);

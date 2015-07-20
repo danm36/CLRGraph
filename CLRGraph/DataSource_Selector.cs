@@ -60,6 +60,14 @@ namespace CLRGraph
             textBox_SourceName.Text = initialName;
         }
 
+        private void listView_DataSourceTypes_DoubleClick(object sender, EventArgs e)
+        {
+            if (listView_DataSourceTypes.SelectedItems.Count < 1)
+                return;
+
+            button_AddSource_Click(sender, e);
+        }
+
         private void button_AddSource_Click(object sender, EventArgs e)
         {
             if (listView_DataSourceTypes.SelectedItems.Count < 1)

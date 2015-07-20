@@ -55,7 +55,7 @@ namespace CLRGraph
         static int currentDefaultColor = 0;
         static DrawMode lastDrawMode = DrawMode.Points;
         static ColorMode lastColorMode = ColorMode.Solid;
-        static TransparencyMode lastTransparencyMode = TransparencyMode.Transparent;
+        static TransparencyMode lastTransparencyMode = TransparencyMode.Solid;
         static float lastLineWidth = 3.0f;
 
         #region Static DataSeries Funcs

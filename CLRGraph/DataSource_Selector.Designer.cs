@@ -60,6 +60,7 @@
             this.listView_DataSourceTypes.TabIndex = 1;
             this.listView_DataSourceTypes.UseCompatibleStateImageBehavior = false;
             this.listView_DataSourceTypes.View = System.Windows.Forms.View.Details;
+            this.listView_DataSourceTypes.DoubleClick += new System.EventHandler(this.listView_DataSourceTypes_DoubleClick);
             // 
             // columnHeader_DataSourceType
             // 

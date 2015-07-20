@@ -49,6 +49,40 @@ namespace CLRGraph
             ClojureDefinedUI.AddClojureSlider(label, var, min, max, 10000, func);
         }
 
+
+        [ClojureStaticMethod("add-ui-numeric", "Creates a numeric up down in the runtime interface that alters the supplied clojure variable and optionally runs a supplied function on change. Uses the double type.")]
+        public static void CreateNumeric(string label, Var var, double min, double max)
+        {
+            ClojureDefinedUI.AddClojureNumericUpDown(label, var, min, max, null);
+        }
+
+        [ClojureStaticMethod("add-ui-numeric", "Creates a numeric up down in the runtime interface that alters the supplied clojure variable and optionally runs a supplied function on change. Uses the double type.")]
+        public static void CreateNumeric(string label, Var var, double min, double max, IFn func)
+        {
+            ClojureDefinedUI.AddClojureNumericUpDown(label, var, min, max, func);
+        }
+
+
+        [ClojureStaticMethod("add-ui-dropdown", "Creates a drop down box in the runtime interface that alters the supplied clojure variable and optionally runs a supplied function on change.")]
+        public static void CreateDropdown(string label, Var var, PersistentVector keyvaluepairs)
+        {
+            ClojureDefinedUI.AddClojureDropDownBox(label, var, keyvaluepairs, null);
+        }
+
+        [ClojureStaticMethod("add-ui-dropdown", "Creates a drop down box in the runtime interface that alters the supplied clojure variable and optionally runs a supplied function on change.")]
+        public static void CreateDropdown(string label, Var var, PersistentVector keyvaluepairs, IFn func)
+        {
+            ClojureDefinedUI.AddClojureDropDownBox(label, var, keyvaluepairs, func);
+        }
+
+        [ClojureStaticMethod("add-ui-dropdown-fn", "Creates a drop down box in the runtime interface that takes in a vector of string-function pairs and runs the function when that option is selected.")]
+        public static void CreateDropdown(string label, PersistentVector keyvaluepairs)
+        {
+            ClojureDefinedUI.AddClojureDropDownBox(label, null, keyvaluepairs, null);
+        }
+
+
+
         [ClojureStaticMethod("params-test", "TEST")]
         public static void ParamsTest(ArraySeq_object obj)
         {

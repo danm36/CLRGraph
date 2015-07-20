@@ -61,7 +61,7 @@
 					randheight (rand height)
 				]
 				(def xvals (conj xvals (+ (* (CMath/Sin yaw) (rand dist)) ox)))
-				(def yvals (conj yvals (+ (- randheight (/ height 2)) oy)))
+				(def yvals (conj yvals (+ randheight oy)))
 				(def zvals (conj zvals (+ (* (CMath/Cos yaw) (rand dist)) oz)))
 			)
 		)

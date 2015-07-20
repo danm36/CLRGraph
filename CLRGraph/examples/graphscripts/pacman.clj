@@ -34,7 +34,7 @@
 ;; And finally draw Blinky himself
 (add-new-current-series "Blinky" Color/Red)
 (add-data-points (random-cloud-spherical -30 0 0 10 10000))
-(add-data-points (random-cloud-cylindrical -30 -5 0 10 10 2500))
+(add-data-points (random-cloud-cylindrical -30 -10 0 10 10 2500))
 (add-data-points (random-cloud-spherical -23 -10 0 2 1000))
 (add-data-points (random-cloud-spherical -28 -10 -5 2 1000))
 (add-data-points (random-cloud-spherical -33 -10 -5 2 1000))

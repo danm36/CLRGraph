@@ -88,7 +88,7 @@ namespace CLRGraph
 
         public virtual bool ShowDataSourceSelector()
         {
-            MessageBox.Show("This data source does not have any configurable sources.", "Data Source Selector", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            ShowDataSeriesConfig();
             return true;
         }
 

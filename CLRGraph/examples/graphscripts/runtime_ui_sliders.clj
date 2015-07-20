@@ -39,3 +39,6 @@
 (add-ui-slider 		"Point Count: " #'pointcount 	10 	10000	sliderupdate)
 (add-ui-slider-double 	"X Offset: " 	#'offset 	0 	20 	sliderupdate)
 (add-ui-slider-double 	"Multiplier: " 	#'multiplier 	0.001 	2 	sliderupdate)
+
+;; And finally actually call the update function to get the initial points
+(sliderupdate)
