@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,10 +19,13 @@ namespace CLRGraph
 
             foreach(KeyValuePair<string, DataSource> kvp in DataSources)
             {
+                Type sourceType = kvp.Value.GetType();
+                DataSourceAttribute attr = (DataSourceAttribute)sourceType.GetCustomAttribute(typeof(DataSourceAttribute));
+
                 ListViewItem lvi = new ListViewItem(kvp.Key);
                 lvi.Tag = kvp.Value;
 
-                lvi.SubItems.Add(kvp.Value.GetType().Name);
+                lvi.SubItems.Add(attr.Name);
                 lvi.SubItems.Add(kvp.Value.SourceLocation);
 
                 items.Add(lvi);
@@ -48,9 +52,22 @@ namespace CLRGraph
                 DataSources.Remove(_SourceName);
                 DataSources.Add(value, this);
                 _SourceName = value;
+                UpdateDataSourceInfoInUI();
             }
         }
-        public string SourceLocation { get; protected set; }
+        private string _SourceLocation = "";
+        public string SourceLocation
+        {
+            get
+            {
+                return _SourceLocation;
+            }
+            protected set
+            {
+                _SourceLocation = value;
+                UpdateDataSourceInfoInUI();
+            }
+        }
         protected bool IsDisposed = false;
 
         public DataSource(string sourceName)

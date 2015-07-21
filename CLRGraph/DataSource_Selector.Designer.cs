@@ -120,6 +120,7 @@
             this.Controls.Add(this.listView_DataSourceTypes);
             this.Controls.Add(this.label1);
             this.Name = "DataSource_Selector";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Data Source Selector";
             this.ResumeLayout(false);
             this.PerformLayout();

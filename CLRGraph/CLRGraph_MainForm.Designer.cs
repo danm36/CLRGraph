@@ -36,6 +36,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.FPSCounterLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
+            this.glGraph = new CLRGraph.GLGraph();
             this.splitContainer_Right = new System.Windows.Forms.SplitContainer();
             this.tabControl_sidebar = new System.Windows.Forms.TabControl();
             this.tabPage_GraphScript = new System.Windows.Forms.TabPage();
@@ -64,6 +65,7 @@
             this.toolStripButton_AddDataSource = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_RemoveDataSource = new System.Windows.Forms.ToolStripButton();
             this.tabPage_RuntimeUI = new System.Windows.Forms.TabPage();
+            this.clojureDefinedUI = new CLRGraph.ClojureDefinedUI();
             this.textBox_Log = new System.Windows.Forms.TextBox();
             this.splitter_Log = new System.Windows.Forms.Splitter();
             this.textBox_RuntimeREPL = new System.Windows.Forms.TextBox();
@@ -86,7 +88,7 @@
             this.quadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.connectedLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.histogramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pointCubesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripDropDownButton_ShaderMode = new System.Windows.Forms.ToolStripDropDownButton();
             this.solidLightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.distanceFogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,8 +108,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_ResetCameraFocus = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_ResetCamera = new System.Windows.Forms.ToolStripButton();
-            this.glGraph = new CLRGraph.GLGraph();
-            this.clojureDefinedUI = new CLRGraph.ClojureDefinedUI();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
@@ -194,6 +194,15 @@
             this.splitContainer_Main.Size = new System.Drawing.Size(784, 466);
             this.splitContainer_Main.SplitterDistance = 413;
             this.splitContainer_Main.TabIndex = 2;
+            // 
+            // glGraph
+            // 
+            this.glGraph.BackColor = System.Drawing.Color.White;
+            this.glGraph.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.glGraph.Location = new System.Drawing.Point(0, 0);
+            this.glGraph.Name = "glGraph";
+            this.glGraph.Size = new System.Drawing.Size(413, 466);
+            this.glGraph.TabIndex = 0;
             // 
             // splitContainer_Right
             // 
@@ -466,6 +475,16 @@
             this.tabPage_RuntimeUI.Text = "Runtime UI";
             this.tabPage_RuntimeUI.UseVisualStyleBackColor = true;
             // 
+            // clojureDefinedUI
+            // 
+            this.clojureDefinedUI.BackColor = System.Drawing.SystemColors.Control;
+            this.clojureDefinedUI.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.clojureDefinedUI.Font = new System.Drawing.Font("Consolas", 8F);
+            this.clojureDefinedUI.Location = new System.Drawing.Point(0, 0);
+            this.clojureDefinedUI.Name = "clojureDefinedUI";
+            this.clojureDefinedUI.Size = new System.Drawing.Size(359, 217);
+            this.clojureDefinedUI.TabIndex = 0;
+            // 
             // textBox_Log
             // 
             this.textBox_Log.BackColor = System.Drawing.SystemColors.Control;
@@ -570,7 +589,7 @@
             this.toolStripButton_ShowAxesInColor});
             this.toolStrip_GraphControl.Location = new System.Drawing.Point(3, 0);
             this.toolStrip_GraphControl.Name = "toolStrip_GraphControl";
-            this.toolStrip_GraphControl.Size = new System.Drawing.Size(180, 25);
+            this.toolStrip_GraphControl.Size = new System.Drawing.Size(211, 25);
             this.toolStrip_GraphControl.TabIndex = 1;
             // 
             // toolStripDropDownButton_LineThickness
@@ -639,7 +658,7 @@
             this.quadsToolStripMenuItem,
             this.toolStripSeparator7,
             this.connectedLinesToolStripMenuItem,
-            this.histogramToolStripMenuItem});
+            this.pointCubesToolStripMenuItem});
             this.toolStripDropDownButton_GraphType.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton_GraphType.Image")));
             this.toolStripDropDownButton_GraphType.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton_GraphType.Name = "toolStripDropDownButton_GraphType";
@@ -691,12 +710,12 @@
             this.connectedLinesToolStripMenuItem.Text = "Connected Lines";
             this.connectedLinesToolStripMenuItem.Click += new System.EventHandler(this.setGraphRenderingMethod);
             // 
-            // histogramToolStripMenuItem
+            // pointCubesToolStripMenuItem
             // 
-            this.histogramToolStripMenuItem.Name = "histogramToolStripMenuItem";
-            this.histogramToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.histogramToolStripMenuItem.Text = "Histogram";
-            this.histogramToolStripMenuItem.Click += new System.EventHandler(this.setGraphRenderingMethod);
+            this.pointCubesToolStripMenuItem.Name = "pointCubesToolStripMenuItem";
+            this.pointCubesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.pointCubesToolStripMenuItem.Text = "Point Cubes";
+            this.pointCubesToolStripMenuItem.Click += new System.EventHandler(this.setGraphRenderingMethod);
             // 
             // toolStripDropDownButton_ShaderMode
             // 
@@ -873,24 +892,6 @@
             this.toolStripButton_ResetCamera.Text = "Reset Camera";
             this.toolStripButton_ResetCamera.Click += new System.EventHandler(this.toolStripButton_ResetCamera_Click);
             // 
-            // glGraph
-            // 
-            this.glGraph.BackColor = System.Drawing.Color.White;
-            this.glGraph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.glGraph.Location = new System.Drawing.Point(0, 0);
-            this.glGraph.Name = "glGraph";
-            this.glGraph.Size = new System.Drawing.Size(413, 466);
-            this.glGraph.TabIndex = 0;
-            // 
-            // clojureDefinedUI
-            // 
-            this.clojureDefinedUI.BackColor = System.Drawing.SystemColors.Control;
-            this.clojureDefinedUI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clojureDefinedUI.Location = new System.Drawing.Point(0, 0);
-            this.clojureDefinedUI.Name = "clojureDefinedUI";
-            this.clojureDefinedUI.Size = new System.Drawing.Size(359, 217);
-            this.clojureDefinedUI.TabIndex = 0;
-            // 
             // CLRGraph_MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -985,7 +986,6 @@
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_GraphType;
         private System.Windows.Forms.ToolStripMenuItem connectedLinesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pointsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem histogramToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton toolStripButton_ShowAxes;
         private System.Windows.Forms.ToolStripButton toolStripButton_ShowAxesInColor;
@@ -1024,6 +1024,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButton_RemoveDataSource;
         private System.Windows.Forms.TabPage tabPage_RuntimeUI;
         private ClojureDefinedUI clojureDefinedUI;
+        private System.Windows.Forms.ToolStripMenuItem pointCubesToolStripMenuItem;
     }
 }
 

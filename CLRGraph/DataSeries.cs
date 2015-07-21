@@ -2,6 +2,7 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace CLRGraph
         Triangles,
         Quads,
         ConnectedLines,
+        PointCubes,
         Histogram,
     }
 
@@ -95,6 +97,10 @@ namespace CLRGraph
         private Timer dataSourcePollTimer = null;
         private const int dataSourcePollTimerMin = 10;
         private int lastPollInterval = 1000;
+
+        private bool pollHistoryEnabled = false;
+        private double pollHistoryOffset = 1;
+        private int pollHistoryLimit = 10;
 
         private uint[] indices = null;
 
@@ -299,10 +305,12 @@ namespace CLRGraph
             }
             dpList.AddRange(newPoints);
 
-            DataPoints = PersistentVector.create(dpList.ToArray());// (PersistentVector)DataPoints.asTransient().conj(newPoints.ToArray()).persistent();
+            DataPoints = PersistentVector.create1(dpList);// (PersistentVector)DataPoints.asTransient().conj(newPoints.ToArray()).persistent();
 
-            for (int i = 0; i < DataPoints.Count; i++)
-                ((GraphPoint)DataPoints[i]).index = i;
+            Parallel.For(0, DataPoints.Count, (i) =>
+                {
+                    ((GraphPoint)DataPoints[i]).index = i;
+                });
 
             UpdateVertexVBO();
             DataSeries_Funcs.UpdateSeriesInfoInUI();
@@ -395,6 +403,15 @@ namespace CLRGraph
             return this;
         }
 
+        public DataSeries SetSeriesPollHistory(bool bEnabled, double offset, int limit)
+        {
+            pollHistoryEnabled = bEnabled;
+            pollHistoryOffset = offset;
+            pollHistoryLimit = limit;
+
+            return this;
+        }
+
         public void UpdatePointsFromDataSource()
         {
             if (dataSource == null)
@@ -405,24 +422,29 @@ namespace CLRGraph
                 return;
             }
 
-            SetDataPoints(dataSource.GetData());
+            if (pollHistoryEnabled)
+            {
+                //OffsetPoints(new Vector3(0, 0, (float)pollHistoryOffset));
+                Filter((p) => {
+                    p.z += (float)pollHistoryOffset;
+                    return p.z < pollHistoryOffset * pollHistoryLimit;
+                });
+                AddDataPoints(dataSource.GetData());
+            }
+            else
+            {
+                SetDataPoints(dataSource.GetData());
+            }
         }
 
         private void UpdateVertexVBO()
         {
-            float[] points = new float[DataPoints.Count * 3];
-            GraphPoint curPoint;
+            List<float> points = new List<float>();
             for (int i = 0; i < DataPoints.Count; i++)
-            {
-                curPoint = (GraphPoint)DataPoints[i];
-
-                points[i * 3 + 0] = curPoint.pos.X;
-                points[i * 3 + 1] = curPoint.pos.Y;
-                points[i * 3 + 2] = curPoint.pos.Z;
-            }
+                points.AddRange(((GraphPoint)DataPoints[i]).GetVertices(DrawMode));
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexVBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(sizeof(float) * points.Length), points, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(sizeof(float) * points.Count), points.ToArray(), BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             UpdateIndexVBO();
@@ -436,6 +458,19 @@ namespace CLRGraph
             ValidateDatapointEdges();
 
             List<uint> indexList = new List<uint>();
+            for (int i = 0; i < DataPoints.Count; i++)
+                indexList.AddRange(((GraphPoint)DataPoints[i]).GetIndices(DrawMode));
+
+            indices = indexList.ToArray();
+
+            if (indices.Length > 0)
+            {
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndexVBO);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(sizeof(uint) * indices.Length), indices, BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            }
+
+            /*List<uint> indexList = new List<uint>();
             GraphPoint curPoint;
 
             int edgeCount = 0;
@@ -445,6 +480,7 @@ namespace CLRGraph
 
                 edgeCount = curPoint.edges.Count;
 
+                //Make memory efficient
                 foreach(GraphPoint edge in curPoint.edges)
                 {
                     if (edge == curPoint)
@@ -473,7 +509,7 @@ namespace CLRGraph
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndexVBO);
                 GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(sizeof(uint) * indices.Length), indices, BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-            }
+            }*/
         }
 
         public void SetLineWidth(float newWidth)
@@ -485,6 +521,7 @@ namespace CLRGraph
         {
             lastDrawMode = DrawMode = mode;
 
+            UpdateVertexVBO();
             UpdateIndexVBO();
         }
 
@@ -544,6 +581,7 @@ namespace CLRGraph
                         break;
 
                     case CLRGraph.DrawMode.Quads:
+                    case CLRGraph.DrawMode.PointCubes:
                         primMode = PrimitiveType.Quads;
                         bNeedsIndices = true;
                         break;
@@ -615,6 +653,34 @@ namespace CLRGraph
             disposed = true;
         }
 
+
+        public void OffsetPoints(Vector3 offset)
+        {
+            foreach (object p in DataPoints)
+                ((GraphPoint)p).pos += offset;
+
+            /*
+            Parallel.ForEach(DataPoints, (p) =>
+                {
+                    ((GraphPoint)p).pos += offset;
+                });
+             * */
+        }
+
+        public void Filter(Func<GraphPoint, bool> func)
+        {
+            /*
+            ConcurrentBag<GraphPoint> remaining = new ConcurrentBag<GraphPoint>();
+            Parallel.ForEach(DataPoints, (p) =>
+            {
+                GraphPoint point = (GraphPoint)p;
+                if (func.Invoke(point))
+                    remaining.Add(point);
+            });
+
+            DataPoints = PersistentVector.create1(remaining);*/
+            DataPoints = PersistentVector.create1(DataPoints.Where(p => func.Invoke((GraphPoint)p)).ToList());
+        }
 
         public int GetPointCount()
         {
@@ -835,6 +901,96 @@ namespace CLRGraph
             return Vector3.Dot(tb, tb) - e * e / f;
         }
 
+        public List<float> GetVertices(DrawMode mode)
+        {
+            if (mode == DrawMode.PointCubes)
+            {
+                return new List<float>() {
+                    x - 0.5f, y - 0.5f, z - 0.5f,
+                    x + 0.5f, y - 0.5f, z - 0.5f,
+                    x + 0.5f, y + 0.5f, z - 0.5f,
+                    x - 0.5f, y + 0.5f, z - 0.5f,
+
+                    x - 0.5f, y - 0.5f, z + 0.5f,
+                    x + 0.5f, y - 0.5f, z + 0.5f,
+                    x + 0.5f, y + 0.5f, z + 0.5f,
+                    x - 0.5f, y + 0.5f, z + 0.5f,
+
+                };
+            }
+
+            return new List<float>() { x, y, z };
+        }
+
+        public List<uint> GetIndices(DrawMode mode)
+        {
+            List<uint> indices = new List<uint>();
+            uint uindex = (uint)index;
+
+            switch (mode)
+            {
+                default:
+                    break;
+
+                case DrawMode.Lines:
+                    foreach (GraphPoint point in edges)
+                    {
+                        indices.Add((uint)index);
+                        indices.Add((uint)point.index);
+                    }
+                    break;
+
+                case DrawMode.Triangles:
+                    foreach (GraphPoint point in edges)
+                        indices.AddRange(FormTrianglesWith(point));
+                    break;
+
+                case DrawMode.Quads:
+                    foreach (GraphPoint point in edges)
+                        indices.AddRange(FormQuadsWith(point));
+                    break;
+
+                case DrawMode.PointCubes:
+                    //Front
+                    indices.Add(uindex * 8 + 3);
+                    indices.Add(uindex * 8 + 2);
+                    indices.Add(uindex * 8 + 1);
+                    indices.Add(uindex * 8 + 0);
+
+                    //Back
+                    indices.Add(uindex * 8 + 4);
+                    indices.Add(uindex * 8 + 5);
+                    indices.Add(uindex * 8 + 6);
+                    indices.Add(uindex * 8 + 7);
+
+                    //Left
+                    indices.Add(uindex * 8 + 3);
+                    indices.Add(uindex * 8 + 0);
+                    indices.Add(uindex * 8 + 4);
+                    indices.Add(uindex * 8 + 7);
+
+                    //Right
+                    indices.Add(uindex * 8 + 1);
+                    indices.Add(uindex * 8 + 2);
+                    indices.Add(uindex * 8 + 6);
+                    indices.Add(uindex * 8 + 5);
+
+                    //Top
+                    indices.Add(uindex * 8 + 2);
+                    indices.Add(uindex * 8 + 3);
+                    indices.Add(uindex * 8 + 7);
+                    indices.Add(uindex * 8 + 6);
+
+                    //Bottom
+                    indices.Add(uindex * 8 + 0);
+                    indices.Add(uindex * 8 + 1);
+                    indices.Add(uindex * 8 + 5);
+                    indices.Add(uindex * 8 + 4);
+                    break;
+            }
+
+            return indices;
+        }
 
         public List<uint> FormTrianglesWith(GraphPoint other, bool bForQuadRendering = false)
         {

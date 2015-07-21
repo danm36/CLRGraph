@@ -141,6 +141,8 @@ namespace CLRGraph
 
             NumericUpDown numericUpDown = new NumericUpDown();
             TrackBar trackbar = new TrackBar();
+            bool disableNumbericUpDownUpdate = false;
+
             trackbar.AutoSize = false;
             trackbar.Width = 128;
             trackbar.Height = 24;
@@ -151,7 +153,9 @@ namespace CLRGraph
             {
                 double tbVal = (double)trackbar.Value / divisor;
                 ClojureEngine.Eval("(def " + variableSymbolName + " " + tbVal + ")");
+                disableNumbericUpDownUpdate = true;
                 numericUpDown.Value = (decimal)tbVal;
+                disableNumbericUpDownUpdate = false;
 
                 if (func != null)
                 {
@@ -174,10 +178,13 @@ namespace CLRGraph
             numericUpDown.DecimalPlaces = (int)Math.Log10(divisor) + 1;
             numericUpDown.Minimum = (decimal)min;
             numericUpDown.Maximum = (decimal)max;
-            numericUpDown.Value = (decimal)trackbar.Value;
+            numericUpDown.Value = (decimal)trackbar.Value / divisor;
             numericUpDown.ValueChanged += (s, e) =>
             {
-                trackbar.Value = (int)numericUpDown.Value * divisor;
+                if (disableNumbericUpDownUpdate)
+                    return;
+
+                trackbar.Value = (int)(numericUpDown.Value * divisor);
             };
 
             Label minmaxLabel = new Label();

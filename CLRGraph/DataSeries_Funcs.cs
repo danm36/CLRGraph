@@ -455,6 +455,44 @@ namespace CLRGraph
         }
         #endregion
 
+        #region Set Poll History
+        [ClojureStaticMethod("series-poll-history", "Enable the series poll history, optionally with Z offset per poll and historic data limit.")]
+        public static DataSeries SetSeriesPollHistory(bool enabled)
+        {
+            return SetSeriesPollHistory(enabled, 1, 10);
+        }
+
+        [ClojureStaticMethod("series-poll-history", "Enable the series poll history, optionally with Z offset per poll and historic data limit.")]
+        public static DataSeries SetSeriesPollHistory(bool enabled, int offset)
+        {
+            return SetSeriesPollHistory(enabled, offset, 10);
+        }
+
+        [ClojureStaticMethod("series-poll-history", "Enable the series poll history, optionally with Z offset per poll and historic data limit.")]
+        public static DataSeries SetSeriesPollHistory(bool enabled, double offset, int limit)
+        {
+            return GetCurrentDataSeries().SetSeriesPollHistory(enabled, offset, limit);
+        }
+
+        [ClojureStaticMethod("series-poll-history", "Enable the series poll history, optionally with Z offset per poll and historic data limit.")]
+        public static DataSeries SetSeriesPollHistory(DataSeries series, bool enabled)
+        {
+            return SetSeriesPollHistory(series, enabled, 1, 10);
+        }
+
+        [ClojureStaticMethod("series-poll-history", "Enable the series poll history, optionally with Z offset per poll and historic data limit.")]
+        public static DataSeries SetSeriesPollHistory(DataSeries series, bool enabled, int offset)
+        {
+            return SetSeriesPollHistory(series, enabled, offset, 10);
+        }
+
+        [ClojureStaticMethod("series-poll-history", "Enable the series poll history, optionally with Z offset per poll and historic data limit.")]
+        public static DataSeries SetSeriesPollHistory(DataSeries series, bool enabled, double offset, int limit)
+        {
+            return series.SetSeriesPollHistory(enabled, offset, limit);
+        }
+        #endregion
+
 
         #region Get Point Counts
         [ClojureStaticMethod("get-series-point-count", "Returns the number of points in the given series.")]

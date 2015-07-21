@@ -86,8 +86,6 @@ namespace CLRGraph
                     return false;
                 }
 
-                bool bIs3D = MessageBox.Show("Create points to render 3D cubes (Memory hog)", "Cubes", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
-
                 line = sr.ReadLine();
 
                 line = sr.ReadLine();
@@ -99,49 +97,16 @@ namespace CLRGraph
 
                 line = sr.ReadLine();
 
-                GraphPoint p1, p2, p3, p4, p5, p6, p7, p8;
-
                 for (int z = 0; z < zCount; z++)
                 {
                     for (int y = 0; y < yCount; y++)
                     {
                         for (int x = 0; x < xCount; x++)
                         {
-                            List<GraphPoint> newPoints = new List<GraphPoint>();
-
-
-                            if (bIs3D)
-                            {
-                                newPoints.Add(p1 = new GraphPoint(x - 0.5, y - 0.5, z - 0.5));
-                                newPoints.Add(p2 = new GraphPoint(x + 0.5, y - 0.5, z - 0.5));
-                                newPoints.Add(p3 = new GraphPoint(x - 0.5, y + 0.5, z - 0.5));
-                                newPoints.Add(p4 = new GraphPoint(x - 0.5, y - 0.5, z + 0.5));
-                                newPoints.Add(p5 = new GraphPoint(x + 0.5, y + 0.5, z - 0.5));
-                                newPoints.Add(p6 = new GraphPoint(x + 0.5, y - 0.5, z + 0.5));
-                                newPoints.Add(p7 = new GraphPoint(x - 0.5, y + 0.5, z + 0.5));
-                                newPoints.Add(p8 = new GraphPoint(x + 0.5, y + 0.5, z + 0.5));
-
-                                p1.AddEdges(p2, p3, p4);
-                                p8.AddEdges(p7, p6, p5);
-
-                                p2.AddEdges(p1, p5, p6);
-                                p7.AddEdges(p8, p4, p3);
-
-                                p3.AddEdges(p1, p5, p7);
-                                p6.AddEdges(p8, p4, p2);
-
-                                p4.AddEdges(p1, p6, p7);
-                                p5.AddEdges(p8, p3, p2);
-                            }
-                            else
-                            {
-                                newPoints.Add(new GraphPoint(x, y, z));
-                            }
-
                             if (line[x + y * xCount + z * yCount * xCount] == '1')
-                                landPoints.AddRange(newPoints);
+                                landPoints.Add(new GraphPoint(x, y, z));
                             else
-                                waterPoints.AddRange(newPoints);
+                                waterPoints.Add(new GraphPoint(x, y, z));
                         }
                     }
                 }

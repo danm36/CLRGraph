@@ -1,4 +1,5 @@
 ﻿using clojure.lang;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,14 +11,15 @@ using System.Windows.Forms;
 namespace CLRGraph
 {
     [DataSourceAttribute("Random Number", "Random")]
-    public class RandomDataSource : DataSource
+    public class DataSource_Random : DataSource
     {
         Random random = new Random();
 
         double minX = -10, maxX = 10, minY = -10, maxY = 10, minZ = -10, maxZ = 10;
-        int pointCountPerTick = 44100;
+        //int pointCountPerTick = 1000;
+        int pointCountPerTick = 1;
 
-        public RandomDataSource(string name)
+        public DataSource_Random(string name)
             : base(name)
         {
 
@@ -39,13 +41,13 @@ namespace CLRGraph
     }
 
     [DataSourceAttribute("Sine Wave", "Over Time")]
-    public class SineWaveDataSource : DataSource
+    public class DataSource_SineWave : DataSource
     {
         double newTime = 0;
         double sineIncrement = 0.1;
         int pointCount = 1000;
 
-        public SineWaveDataSource(string name)
+        public DataSource_SineWave(string name)
             : base(name)
         {
 
@@ -67,7 +69,7 @@ namespace CLRGraph
 
 
     [DataSourceAttribute("CSV File", "File")]
-    public class CSVDataSource : DataSource
+    public class DataSource_CSVFile : DataSource
     {
         Dictionary<string, List<object>> CSVTable = new Dictionary<string, List<object>>();
         int rows = 0;
@@ -76,7 +78,7 @@ namespace CLRGraph
         string yaxis = null;
         string zaxis = null;
 
-        public CSVDataSource(string name)
+        public DataSource_CSVFile(string name)
             : base(name)
         {
 
@@ -175,5 +177,4 @@ namespace CLRGraph
             zaxis = axisDefiner.zAxisColumn;
         }
     }
-
 }

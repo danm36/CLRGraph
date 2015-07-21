@@ -240,8 +240,8 @@ namespace CLRGraph
                     DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Quads);
                 else if (sender == connectedLinesToolStripMenuItem)
                     DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.ConnectedLines);
-                else if (sender == histogramToolStripMenuItem)
-                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.Histogram);
+                else if (sender == pointCubesToolStripMenuItem)
+                    DataSeries_Funcs.SetSeriesDrawModeAll(DrawMode.PointCubes);
 
                 GLGraph.Redraw(true);
             }
@@ -360,6 +360,5 @@ namespace CLRGraph
             ((DataSource)listView_DataSources.SelectedItems[0].Tag).ShowDataSeriesConfig();
         }
         #endregion
-
     }
 }
