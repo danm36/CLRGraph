@@ -101,6 +101,7 @@ namespace CLRGraph
             IsDisposed = true;
         }
 
+        public virtual bool NeedToGetNewData() { return true; }
         public abstract PersistentVector GetData();
 
         public virtual bool ShowDataSourceSelector()

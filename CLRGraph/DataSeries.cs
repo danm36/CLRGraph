@@ -412,6 +412,7 @@ namespace CLRGraph
             return this;
         }
 
+        bool bStillUpdating = false;
         public void UpdatePointsFromDataSource()
         {
             if (dataSource == null)
@@ -421,6 +422,11 @@ namespace CLRGraph
 
                 return;
             }
+
+            if (bStillUpdating || !dataSource.NeedToGetNewData())
+                return;
+
+            bStillUpdating = true;
 
             if (pollHistoryEnabled)
             {
@@ -435,6 +441,8 @@ namespace CLRGraph
             {
                 SetDataPoints(dataSource.GetData());
             }
+
+            bStillUpdating = false;
         }
 
         private void UpdateVertexVBO()

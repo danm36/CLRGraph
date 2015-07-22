@@ -54,6 +54,8 @@ namespace CLRGraph
         StreamReader sr = null;
         int myPort = 5000;
 
+        bool hasNewdata = false;
+
         public DataSource_TomsErosionPatterns_Net(string name)
             : base(name)
         {
@@ -61,7 +63,7 @@ namespace CLRGraph
             listener.Start();
         }
 
-        public override PersistentVector GetData()
+        public override bool NeedToGetNewData()
         {
             try
             {
@@ -81,12 +83,17 @@ namespace CLRGraph
                     pendingFile = pendingFile.Substring(pendingFile.IndexOf("E1"));
                     if (pendingFile.IndexOf(";") >= 0)
                     {
-                        string[] lines = pendingFile.Split('\n');
+                        ClojureEngine.Log("Beginning read of recieved data.");
+
+                        string checkingFile = pendingFile.Substring(0, pendingFile.IndexOf(";"));
+                        pendingFile = pendingFile.Substring(pendingFile.IndexOf(";") + 1);
+
+                        string[] lines = checkingFile.Split('\n');
 
                         if (lines[0] != "E1")
                         {
                             MessageBox.Show("File is not a correct erosion type", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return null;
+                            return false;
                         }
 
                         landPoints.Clear();
@@ -112,7 +119,9 @@ namespace CLRGraph
                             }
                         }
 
-                        pendingFile = pendingFile.Substring(pendingFile.IndexOf(";"));
+                        ClojureEngine.Log("Recieved data parsed.");
+
+                        hasNewdata = true;
                     }
                 }
             }
@@ -121,6 +130,12 @@ namespace CLRGraph
                 ClojureEngine.Log(e.ToString());
             }
 
+            return hasNewdata;
+        }
+
+        public override PersistentVector GetData()
+        {
+            hasNewdata = false;
             return PersistentVector.create1(bShowWaterInsteadOfLand ? waterPoints : landPoints);
         }
 

@@ -316,7 +316,7 @@ namespace CLRGraph
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             for (int i = 0; i < DataSeries.AllDataSeries.Count; i++)
-                DataSeries.AllDataSeries[i].Draw(GL_SimpleRedraw);
+                DataSeries.AllDataSeries[i].Draw(false);//GL_SimpleRedraw);
 
             if (drawAxes)
             {
