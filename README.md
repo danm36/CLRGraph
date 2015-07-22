@@ -3,9 +3,11 @@ CLRGraph is a C# and Clojure powered plotter and grapher, initially developed by
 
 ## Required Dependencies
 * ClojureCLR: http://clojure.org/clojureclr
-  * This is for the runtime scripting engine.
+ * This is for the runtime scripting engine.
 * OpenTK: http://www.opentk.com/
-  * This is for graph rendering
+ * This is for graph rendering.
+* NAudio: https://github.com/naudio/NAudio
+ * This is to read audio input. 
 
 ## Current Features
 * Full live scripting capabilities via both a core script file and a REPL. Use the main scripting window to define and set up your graph, then use the REPL to make fine adjustments.
