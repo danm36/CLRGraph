@@ -94,6 +94,7 @@ namespace CLRGraph
         public float LineWidth { get; private set; }
 
         private DataSource dataSource = null;
+        private int dataSourceChannel = 0;
         private Timer dataSourcePollTimer = null;
         private const int dataSourcePollTimerMin = 10;
         private int lastPollInterval = 1000;
@@ -372,6 +373,13 @@ namespace CLRGraph
             return this;
         }
 
+        public DataSeries SetDataSourceChannel(int channel)
+        {
+            dataSourceChannel = channel;
+            return this;
+        }
+
+
         public DataSeries StartDataSourcePoll()
         {
             StopDataSourcePoll();
@@ -423,7 +431,7 @@ namespace CLRGraph
                 return;
             }
 
-            if (bStillUpdating || !dataSource.NeedToGetNewData())
+            if (bStillUpdating || !dataSource.NeedToGetNewData(dataSourceChannel))
                 return;
 
             bStillUpdating = true;
@@ -435,11 +443,11 @@ namespace CLRGraph
                     p.z += (float)pollHistoryOffset;
                     return p.z < pollHistoryOffset * pollHistoryLimit;
                 });
-                AddDataPoints(dataSource.GetData());
+                AddDataPoints(dataSource.GetData(dataSourceChannel));
             }
             else
             {
-                SetDataPoints(dataSource.GetData());
+                SetDataPoints(dataSource.GetData(dataSourceChannel));
             }
 
             bStillUpdating = false;

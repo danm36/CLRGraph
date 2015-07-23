@@ -109,7 +109,7 @@ namespace CLRGraph
             SetupAudioSource();
         }
 
-        public override PersistentVector GetData()
+        public override PersistentVector GetData(int channel = 0)
         {
             if (rawData == null)
                 return null;

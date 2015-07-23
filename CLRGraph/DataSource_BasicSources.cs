@@ -25,7 +25,7 @@ namespace CLRGraph
 
         }
 
-        public override PersistentVector GetData()
+        public override PersistentVector GetData(int channel = 0)
         {
             GraphPoint[] points = new GraphPoint[pointCountPerTick];
 
@@ -53,7 +53,7 @@ namespace CLRGraph
 
         }
 
-        public override PersistentVector GetData()
+        public override PersistentVector GetData(int channel = 0)
         {
             GraphPoint[] points = new GraphPoint[pointCount];
 
@@ -84,7 +84,7 @@ namespace CLRGraph
 
         }
 
-        public override PersistentVector GetData()
+        public override PersistentVector GetData(int channel = 0)
         {
             List<GraphPoint> points = new List<GraphPoint>();
 

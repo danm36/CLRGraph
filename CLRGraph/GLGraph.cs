@@ -1,5 +1,6 @@
 ﻿using clojure.lang;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using System;
 using System.Collections;
@@ -115,7 +116,7 @@ namespace CLRGraph
 
         private void InitializeComponent()
         {
-            this.glControl = new OpenTK.GLControl();
+            this.glControl = new OpenTK.GLControl(new GraphicsMode(32, 8, 8, 2));
             this.SuspendLayout();
             // 
             // glControl

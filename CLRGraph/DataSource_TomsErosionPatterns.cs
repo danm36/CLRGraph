@@ -48,9 +48,10 @@ namespace CLRGraph
 
         }
 
-        public override PersistentVector GetData()
+        public override PersistentVector GetData(int channel = 0)
         {
-            return PersistentVector.create1(bShowWaterInsteadOfLand ? waterPoints : landPoints);
+            bool actualChannel = channel == 1 ? !bShowWaterInsteadOfLand : bShowWaterInsteadOfLand;
+            return PersistentVector.create1(actualChannel ? waterPoints : landPoints);
         }
 
         public override void ShowDataSeriesConfig()

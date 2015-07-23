@@ -417,6 +417,20 @@ namespace CLRGraph
         }
         #endregion
 
+        #region Set Data Source Channel
+        [ClojureStaticMethod("set-series-data-source-channel", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSourceChannel(int channel)
+        {
+            return SetDataSourceChannel(GetCurrentDataSeries(), channel);
+        }
+
+        [ClojureStaticMethod("set-series-data-source-channel", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        public static DataSeries SetDataSourceChannel(DataSeries series, int channel)
+        {
+            return series.SetDataSourceChannel(channel);
+        }
+        #endregion
+
         #region Start/Stop Source Poll Timers
         [ClojureStaticMethod("start-series-poll", "Starts the data source poll timer on a series, optionally with a new interval.")]
         public static DataSeries StartSeriesPollTimer()

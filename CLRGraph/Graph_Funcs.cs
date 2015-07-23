@@ -220,23 +220,29 @@ namespace CLRGraph
         [ClojureStaticMethod("make-3d-surface", "Creates and returns a set of points forming a square surface with the given Y values, optionally centered on the axes")]
         public static List<GraphPoint> Make3DSurface(int xCount, int zCount, IList vals)
         {
-            return Make3DSurface(xCount, zCount, xCount, zCount, vals, false);
+            return Make3DSurface(0, 0, xCount, zCount, xCount, zCount, vals);
         }
 
         [ClojureStaticMethod("make-3d-surface", "Creates and returns a set of points forming a square surface with the given Y values, optionally centered on the axes")]
         public static List<GraphPoint> Make3DSurface(int xCount, int zCount, IList vals, bool centered)
         {
-            return Make3DSurface(xCount, zCount, xCount, zCount, vals, centered);
+            return Make3DSurface(centered ? -xCount / 2 : 0, centered ? -zCount / 2 : 0, xCount, zCount, xCount, zCount, vals);
         }
 
         [ClojureStaticMethod("make-3d-surface", "Creates and returns a set of points forming a square surface with the given Y values, optionally centered on the axes")]
         public static List<GraphPoint> Make3DSurface(double width, double depth, int xCount, int zCount, IList vals)
         {
-            return Make3DSurface(width, depth, xCount, zCount, vals, false);
+            return Make3DSurface(0, 0, width, depth, xCount, zCount, vals);
         }
 
         [ClojureStaticMethod("make-3d-surface", "Creates and returns a set of points forming a square surface with the given Y values, optionally centered on the axes")]
         public static List<GraphPoint> Make3DSurface(double width, double depth, int xCount, int zCount, IList vals, bool centered)
+        {
+            return Make3DSurface(centered ? (int)(-width / 2) : 0, centered ? (int)(-depth / 2) : 0, width, depth, xCount, zCount, vals);
+        }
+
+        [ClojureStaticMethod("make-3d-surface", "Creates and returns a set of points forming a square surface with the given Y values, optionally centered on the axes")]
+        public static List<GraphPoint> Make3DSurface(int xStart, int zStart, double width, double depth, int xCount, int zCount, IList vals)
         {
             List<GraphPoint> points = new List<GraphPoint>();
             List<int> indices = new List<int>();
@@ -248,13 +254,16 @@ namespace CLRGraph
 
             double testYVal = 0;
 
-            int xStart = centered ? -xCount / 2 : 0;
-            int zStart = centered ? -zCount / 2 : 0;
-
             for (int z = 0; z < zCount; z++)
             {
                 for (int x = 0; x < xCount; x++)
                 {
+                    if (z * xCount + x >= vals.Count)
+                    {
+                        points.Add(new GraphPoint(0, 0, 0));
+                        continue;
+                    }
+                    
                     if (!double.TryParse(vals[z * xCount + x].ToString(), out testYVal))
                     {
                         ClojureEngine.Log("Y Value '" + vals[z * xCount + x].ToString() + "' is not numeric. Defaulting to 0");
@@ -269,7 +278,7 @@ namespace CLRGraph
                         indices.Add((z + 0) * xCount + x + 1);
                     }
 
-                    points.Add(new GraphPoint(x + xStart, testYVal, z + zStart, indices));
+                    points.Add(new GraphPoint((((double)x / xCount) * width) + xStart, testYVal, (((double)z / zCount) * depth) + zStart, indices));
                 }
             }
 

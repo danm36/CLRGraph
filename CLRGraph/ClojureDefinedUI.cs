@@ -258,11 +258,7 @@ namespace CLRGraph
 
                     object code = labelCodeAssoc[comboBox.SelectedItem.ToString()];
 
-                    if (code is IFn)
-                    {
-                        ClojureEngine.Log(((IFn)code).invoke());
-                    }
-                    else if(variableSymbolName != null)
+                     if(variableSymbolName != null)
                     {
                         string newVal = code.ToString();
                         ClojureEngine.Eval("(def " + variableSymbolName + " " + newVal + ")");
@@ -271,6 +267,52 @@ namespace CLRGraph
                     if (func != null)
                         ClojureEngine.Log(func.invoke());
                 };
+
+            self.AddNewClojureControls(new Control[] { label, comboBox });
+        }
+
+        public static void AddClojureDropDownBoxFn(string labelText, Var variable, PersistentVector vals, IFn func)
+        {
+            string variableSymbolName = null;
+
+            if (variable != null)
+                variableSymbolName = variable.sym.Name;
+
+            Label label = new Label();
+            label.AutoSize = true;
+            label.Text = labelText;
+
+            Dictionary<string, object> labelCodeAssoc = new Dictionary<string, object>();
+
+            ComboBox comboBox = new ComboBox();
+            for (int i = 0; i < vals.Count; i += 2)
+            {
+                labelCodeAssoc.Add(vals[i].ToString(), vals[i + 1]);
+                comboBox.Items.Add(vals[i]);
+            }
+
+            comboBox.SelectedIndex = 0;
+            comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox.SelectedIndexChanged += (s, e) =>
+            {
+                if (comboBox.SelectedItem == null)
+                    return;
+
+                object code = labelCodeAssoc[comboBox.SelectedItem.ToString()];
+
+                if (code is IFn)
+                {
+                    ClojureEngine.Log(((IFn)code).invoke());
+                }
+                else if (variableSymbolName != null)
+                {
+                    string newVal = code.ToString();
+                    ClojureEngine.Eval("(def " + variableSymbolName + " " + newVal + ")");
+                }
+
+                if (func != null)
+                    ClojureEngine.Log(func.invoke());
+            };
 
             self.AddNewClojureControls(new Control[] { label, comboBox });
         }

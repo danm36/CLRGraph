@@ -16,20 +16,17 @@ namespace CLRGraph
 {
     public partial class DataSource_TomsErosionPatterns_Net_Config : Form
     {
-        public bool bDisplayWaterInsteadOfLand = false;
         public int port = 5000;
 
-        public DataSource_TomsErosionPatterns_Net_Config(bool displayWater, int nPort)
+        public DataSource_TomsErosionPatterns_Net_Config(int nPort)
         {
             InitializeComponent();
 
-            checkBox_displayWater.Checked = bDisplayWaterInsteadOfLand = displayWater;
             numericUpDown_port.Value = port = nPort;
         }
 
         private void button_apply_Click(object sender, EventArgs e)
         {
-            bDisplayWaterInsteadOfLand = checkBox_displayWater.Checked;
             port = (int)numericUpDown_port.Value;
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -43,7 +40,6 @@ namespace CLRGraph
     [DataSourceAttribute("Tom's Erosion Pattern Network", "TCP Network")]
     public class DataSource_TomsErosionPatterns_Net : DataSource
     {
-        bool bShowWaterInsteadOfLand = false;
         List<GraphPoint> landPoints = new List<GraphPoint>();
         List<GraphPoint> waterPoints = new List<GraphPoint>();
 
@@ -54,7 +50,8 @@ namespace CLRGraph
         StreamReader sr = null;
         int myPort = 5000;
 
-        bool hasNewdata = false;
+        bool needLandData = false;
+        bool needWaterData = false;
 
         public DataSource_TomsErosionPatterns_Net(string name)
             : base(name)
@@ -63,7 +60,7 @@ namespace CLRGraph
             listener.Start();
         }
 
-        public override bool NeedToGetNewData()
+        public override bool NeedToGetNewData(int channel)
         {
             try
             {
@@ -79,13 +76,17 @@ namespace CLRGraph
 
                 if (myClient != null && myClient.Available > 0)
                 {
-                    pendingFile += sr.ReadLine() + "\n";
-                    pendingFile = pendingFile.Substring(pendingFile.IndexOf("E1"));
+                    char[] buffer = new char[myClient.Available];
+                    sr.Read(buffer, 0, buffer.Length);
+
+                    pendingFile += new string(buffer);
+                    
+                    pendingFile = pendingFile.Substring(pendingFile.LastIndexOf("E1"));
                     if (pendingFile.IndexOf(";") >= 0)
                     {
                         ClojureEngine.Log("Beginning read of recieved data.");
 
-                        string checkingFile = pendingFile.Substring(0, pendingFile.IndexOf(";"));
+                        string checkingFile = pendingFile.Substring(0, pendingFile.IndexOf(";")).Replace("\r", "");
                         pendingFile = pendingFile.Substring(pendingFile.IndexOf(";") + 1);
 
                         string[] lines = checkingFile.Split('\n');
@@ -121,7 +122,8 @@ namespace CLRGraph
 
                         ClojureEngine.Log("Recieved data parsed.");
 
-                        hasNewdata = true;
+                        needLandData = true;
+                        needWaterData = true;
                     }
                 }
             }
@@ -130,23 +132,25 @@ namespace CLRGraph
                 ClojureEngine.Log(e.ToString());
             }
 
-            return hasNewdata;
+            return channel == 1 ? needWaterData : needLandData;
         }
 
-        public override PersistentVector GetData()
+        public override PersistentVector GetData(int channel = 0)
         {
-            hasNewdata = false;
-            return PersistentVector.create1(bShowWaterInsteadOfLand ? waterPoints : landPoints);
+            if (channel == 1)
+                needWaterData = false;
+            else
+                needLandData = false;
+            return PersistentVector.create1(channel == 1 ? waterPoints : landPoints);
         }
 
         public override void ShowDataSeriesConfig()
         {
-            DataSource_TomsErosionPatterns_Net_Config cfg = new DataSource_TomsErosionPatterns_Net_Config(bShowWaterInsteadOfLand, myPort);
+            DataSource_TomsErosionPatterns_Net_Config cfg = new DataSource_TomsErosionPatterns_Net_Config(myPort);
 
             if (cfg.ShowDialog() != DialogResult.OK)
                 return;
 
-            bShowWaterInsteadOfLand = cfg.bDisplayWaterInsteadOfLand;
             myPort = cfg.port;
 
             StartListener();

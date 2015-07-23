@@ -76,9 +76,9 @@ namespace CLRGraph
         }
 
         [ClojureStaticMethod("add-ui-dropdown-fn", "Creates a drop down box in the runtime interface that takes in a vector of string-function pairs and runs the function when that option is selected.")]
-        public static void CreateDropdown(string label, PersistentVector keyvaluepairs)
+        public static void CreateDropdownFn(string label, PersistentVector keyvaluepairs)
         {
-            ClojureDefinedUI.AddClojureDropDownBox(label, null, keyvaluepairs, null);
+            ClojureDefinedUI.AddClojureDropDownBoxFn(label, null, keyvaluepairs, null);
         }
 
 
