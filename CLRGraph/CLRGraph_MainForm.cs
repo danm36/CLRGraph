@@ -158,6 +158,9 @@ namespace CLRGraph
             }
             else if (e.KeyCode == Keys.Up && (isNavigatingCommandHistory || textBox_RuntimeREPL.TextLength == 0))
             {
+                if (commandHistory.Count == 0)
+                    return;
+
                 isNavigatingCommandHistory = true;
 
                 --currentCommandIndex;
@@ -170,6 +173,9 @@ namespace CLRGraph
             }
             else if (e.KeyCode == Keys.Down && (isNavigatingCommandHistory || textBox_RuntimeREPL.TextLength == 0))
             {
+                if (commandHistory.Count == 0)
+                    return;
+
                 isNavigatingCommandHistory = true;
 
                 ++currentCommandIndex;

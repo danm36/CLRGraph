@@ -103,6 +103,9 @@ namespace CLRGraph
             RT_Eval.invoke(RT_ReadString.invoke(outstrval_macro)); //Allows correct returns for logging
 
             Eval("(use 'clojure.repl)");
+            Eval("(def x 0)");
+            Eval("(def y 0)");
+            Eval("(def z 0)");
             //Load clojure functions from this runtime
             LoadClojureFuncsFromAllAssemblies();
             InitRuntimeMethods();

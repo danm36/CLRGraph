@@ -116,7 +116,7 @@ namespace CLRGraph
 
         private void InitializeComponent()
         {
-            this.glControl = new OpenTK.GLControl(new GraphicsMode(32, 8, 8, 2));
+            this.glControl = new OpenTK.GLControl(new GraphicsMode(new ColorFormat(8, 8, 8, 8), 8, 8, 2));
             this.SuspendLayout();
             // 
             // glControl
