@@ -101,6 +101,7 @@ namespace CLRGraph
             IsDisposed = true;
         }
 
+        public virtual void GraphReset() { }
         public virtual bool NeedToGetNewData(int channel = 0) { return true; }
         public abstract PersistentVector GetData(int channel = 0);
 

@@ -1,6 +1,6 @@
 ﻿#version 330
 
-attribute vec4 aVert;
+attribute vec4 aVertex;
 
 varying vec4 vColor;
 
@@ -9,12 +9,12 @@ uniform int uColorAxes;
 
 void main(void)
 {
-	gl_Position = uPVMMatrix * vec4(aVert.x, aVert.y, -aVert.z, 1);
+	gl_Position = uPVMMatrix * vec4(aVertex.x, aVertex.y, -aVertex.z, 1);
 
 	vColor = vec4(0, 0, 0, 1);
 	if(uColorAxes != 0)
 	{
-		switch(int(aVert.w))
+		switch(int(aVertex.w))
 		{
 			default:
 				break;

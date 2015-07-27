@@ -1,4 +1,5 @@
 ﻿using clojure.lang;
+using OpenTK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -651,6 +652,107 @@ namespace CLRGraph
         {
             for (int i = 0; i < DataSeries.AllDataSeries.Count; i++)
                 DataSeries.AllDataSeries[i].SetLineWidth(width);
+        }
+        #endregion
+
+
+        #region Series Transforms
+        [ClojureStaticMethod("translate-series", "Translates the given series' points by the given coordinates")]
+        public static DataSeries OffsetSeries(float x, float y, float z)
+        {
+            return OffsetSeries(GetCurrentDataSeries(), x, y, z);
+        }
+
+        [ClojureStaticMethod("translate-series", "Translates the given series' points by the given coordinates")]
+        public static DataSeries OffsetSeries(DataSeries series, float x, float y, float z)
+        {
+            return series.TranslatePoints(new Vector3(x, y, z));
+        }
+
+        [ClojureStaticMethod("scale-series", "Scales the given series' points by the given coordinates")]
+        public static DataSeries ScaleSeries(float scale)
+        {
+            return ScaleSeries(GetCurrentDataSeries(), scale, scale, scale);
+        }
+
+        [ClojureStaticMethod("scale-series", "Scales the given series' points by the given coordinates")]
+        public static DataSeries ScaleSeries(DataSeries series, float scale)
+        {
+            return ScaleSeries(series, scale, scale, scale);
+        }
+
+        [ClojureStaticMethod("scale-series", "Scales the given series' points by the given coordinates")]
+        public static DataSeries ScaleSeries(float x, float y, float z)
+        {
+            return ScaleSeries(GetCurrentDataSeries(), x, y, z);
+        }
+
+        [ClojureStaticMethod("scale-series", "Scales the given series' points by the given coordinates")]
+        public static DataSeries ScaleSeries(DataSeries series, float x, float y, float z)
+        {
+            return series.ScalePoints(new Vector3(x, y, z));
+        }
+
+        [ClojureStaticMethod("rotate-series", "Rotates the given series' points by the given coordinates")]
+        public static DataSeries RotateSeries(float pitch, float yaw, float roll)
+        {
+            return RotateSeries(GetCurrentDataSeries(), pitch, yaw, roll);
+        }
+
+        [ClojureStaticMethod("rotate-series", "Rotates the given series' points by the given coordinates")]
+        public static DataSeries RotateSeries(DataSeries series, float pitch, float yaw, float roll)
+        {
+            return series.RotatePoints(new Vector3(pitch, yaw, roll));
+        }
+
+        [ClojureStaticMethod("transform-series", "Transforms the given series by the translation, scale and rotation parameters")]
+        public static DataSeries TransformSeries(float tX, float tY, float tZ, float scale, float pitch, float yaw, float roll)
+        {
+            return TransformSeries(GetCurrentDataSeries(), tX, tY, tZ, scale, scale, scale, pitch, yaw, roll);
+        }
+
+        [ClojureStaticMethod("transform-series", "Transforms the given series by the translation, scale and rotation parameters")]
+        public static DataSeries TransformSeries(DataSeries series, float tX, float tY, float tZ, float scale, float pitch, float yaw, float roll)
+        {
+            return TransformSeries(series, tX, tY, tZ, scale, scale, scale, pitch, yaw, roll);
+        }
+
+        [ClojureStaticMethod("transform-series", "Transforms the given series by the translation, scale and rotation parameters")]
+        public static DataSeries TransformSeries(float tX, float tY, float tZ, float sX, float sY, float sZ, float pitch, float yaw, float roll)
+        {
+            return TransformSeries(GetCurrentDataSeries(), tX, tY, tZ, sX, sY, sZ, pitch, yaw, roll);
+        }
+
+        [ClojureStaticMethod("transform-series", "Transforms the given series by the translation, scale and rotation parameters")]
+        public static DataSeries TransformSeries(DataSeries series, float tX, float tY, float tZ, float sX, float sY, float sZ, float pitch, float yaw, float roll)
+        {
+            return series.TransformPoints(  Matrix4.CreateScale(sX, sY, sZ) * 
+                                            Matrix4.CreateRotationZ(roll) * Matrix4.CreateRotationY(yaw) * Matrix4.CreateRotationX(pitch) *
+                                            Matrix4.CreateTranslation(tX, tY, tZ));
+        }
+
+        [ClojureStaticMethod("reset-series-transforms", "Resets all transforms on the series")]
+        public static DataSeries ResetSeriesTransforms()
+        {
+            return ResetSeriesTransforms(GetCurrentDataSeries());
+        }
+
+        [ClojureStaticMethod("reset-series-transforms", "Resets all transforms on the series")]
+        public static DataSeries ResetSeriesTransforms(DataSeries series)
+        {
+            return series.ResetTransforms();
+        }
+
+        [ClojureStaticMethod("bake-series-transforms", "Bakes the current transformations into the points. After this is done, resetting the transforms will return to this point instead. Analysis functions will now work on the new baked points instead of the original.")]
+        public static DataSeries BakeSeriesTransforms()
+        {
+            return BakeSeriesTransforms(GetCurrentDataSeries());
+        }
+
+        [ClojureStaticMethod("bake-series-transforms", "Bakes the current transformations into the points. After this is done, resetting the transforms will return to this point instead. Analysis functions will now work on the new baked points instead of the original.")]
+        public static DataSeries BakeSeriesTransforms(DataSeries series)
+        {
+            return series.BakeTransforms();
         }
         #endregion
     }

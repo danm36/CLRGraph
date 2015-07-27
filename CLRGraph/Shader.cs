@@ -15,7 +15,9 @@ namespace CLRGraph
         public int shaderProgramHandle = -1;
 
         public int vertexAttribLocation = -1;
+        public int normalAttribLocation = -1;
         public int uPVMMatrixLocation = -1;
+        public int uVertexOffsetLocation = -1;
 
         Dictionary<string, int> uniformCache = new Dictionary<string, int>();
 
@@ -89,8 +91,11 @@ namespace CLRGraph
 
             GL.UseProgram(shaderProgramHandle);
 
-            vertexAttribLocation = GL.GetAttribLocation(shaderProgramHandle, "aVert");
+            vertexAttribLocation = GL.GetAttribLocation(shaderProgramHandle, "aVertex");
+            normalAttribLocation = GL.GetAttribLocation(shaderProgramHandle, "aNormal");
+
             uPVMMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "uPVMMatrix");
+            uVertexOffsetLocation = GL.GetUniformLocation(shaderProgramHandle, "uVertexOffset");
 
             shaderLoaded = true;
             loadedShaders.Add(this);

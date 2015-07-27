@@ -10,15 +10,22 @@
 #define PERSP_FAR 1500.0
 #define FOG_DENSITY 6.0
 
+#define LIGHT_BIAS 0.5
 
 varying vec4 vPosition;
+varying vec3 vNormal;
 
 uniform vec4 uSeriesColor;
 uniform float uSeriesColorScale;
 uniform int uColorMode;
 
+uniform vec3 cameraDirection;
+
 void main(void)
 {
+	//gl_FragColor = vec4(vNormal, 1);
+	//return;
+
 	vec4 finalColor = uSeriesColor;
 
 	switch(uColorMode)
@@ -38,6 +45,9 @@ void main(void)
 			break;
 	}
 
+	vec3 lightVector = normalize(vec3(1, 1, 0));
+	float lightFactor = max(0.0, dot(vNormal, lightVector)) * LIGHT_BIAS + (1 - LIGHT_BIAS);
+
 	finalColor.a = 0.5;
-	gl_FragColor = finalColor * uSeriesColorScale;
+	gl_FragColor = finalColor * uSeriesColorScale * lightFactor;
 }
