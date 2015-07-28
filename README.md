@@ -12,7 +12,7 @@ CLRGraph is a C# and Clojure powered plotter and grapher, initially developed by
 ## Current Features
 * Full live scripting capabilities via both a core script file and a REPL. Use the main scripting window to define and set up your graph, then use the REPL to make fine adjustments.
  * Note: Upon running Clojure from the main scripting window, the entire graph will be reset. This will not happen in the REPL.
-* Up to 1,000,000 points at once (Approximate current tested limit - I aim to up this using latent storage and data sets)
+* Virtual unlimited point count based on your current maximum RAM (Averages 1GB usage for around 2.5 million points)
 * Render as lines, triangles or quads based on point edges.
 * 2D, 3D Orthographic and 3D Perspective rendering modes.
 * Import arbitrary data, including [upcoming] live sensor data in real time.
