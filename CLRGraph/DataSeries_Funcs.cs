@@ -369,52 +369,28 @@ namespace CLRGraph
         #endregion
 
         #region Set Data Source
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a data source channel (Defaults to channel 0).")]
         public static DataSeries SetDataSource(string sourceName)
         {
-            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName));
+            return SetDataSource(GetCurrentDataSeries(), sourceName, 0);
         }
 
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(string sourceName, double interval)
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a data source channel (Defaults to channel 0).")]
+        public static DataSeries SetDataSource(string sourceName, int channel)
         {
-            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName), interval);
+            return SetDataSource(GetCurrentDataSeries(), sourceName, channel);
         }
 
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(string sourceName, DataSeries series)
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a data source channel (Defaults to channel 0).")]
+        public static DataSeries SetDataSource(DataSeries series, string sourceName)
         {
-            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName), series);
+            return SetDataSource(series, sourceName, 0);
         }
 
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(string sourceName, DataSeries series, double interval)
+        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a data source channel (Defaults to channel 0).")]
+        public static DataSeries SetDataSource(DataSeries series, string sourceName, int channel)
         {
-            return SetDataSource(DataSource_Funcs.GetDataSource(sourceName), series, interval);
-        }
-
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(DataSource source)
-        {
-            return SetDataSource(source, GetCurrentDataSeries());
-        }
-
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(DataSource source, double interval)
-        {
-            return SetDataSource(source, GetCurrentDataSeries(), interval);
-        }
-
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(DataSource source, DataSeries series)
-        {
-            return series.SetDataSource(source);
-        }
-
-        [ClojureStaticMethod("set-series-data-source", "Attaches a data source to a series, optionally with a repeating poll interval.")]
-        public static DataSeries SetDataSource(DataSource source, DataSeries series, double interval)
-        {
-            return series.SetDataSource(source, interval);
+            return series.SetDataSource(sourceName, channel);
         }
         #endregion
 

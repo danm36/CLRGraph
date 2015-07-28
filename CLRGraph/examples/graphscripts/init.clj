@@ -1,4 +1,4 @@
-(set-series-data-source "DataSource_1")
-(translate-series 0.02 -0.032 0)
-(scale-series 100)
-(rotate-series 0 CMath/PI 0)
+(set-series-draw-mode DrawMode/PointCubes)
+(start-series-poll (set-series-data-source-channel (set-series-data-source "DataSource_1") 0) 0.03)
+(add-new-current-series)
+(start-series-poll (set-series-data-source-channel (set-series-data-source "DataSource_1") 1) 0.03)

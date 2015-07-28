@@ -18,7 +18,7 @@ namespace CLRGraph
 
         static Dictionary<Type, DataSourceAttribute> sources = null;
 
-        public DataSource_Selector()
+        public DataSource_Selector(string initialName = null, bool bNameLocked = false)
         {
             InitializeComponent();
 
@@ -50,14 +50,18 @@ namespace CLRGraph
                 listView_DataSourceTypes.Items.Add(lvi);
             }
 
-            string initialName = "";
-            int index = DataSource.DataSources.Count;
-            do
+            if (initialName == null)
             {
-                initialName = "DataSource_" + ++index;
+                int index = DataSource.DataSources.Count;
+                do
+                {
+                    initialName = "DataSource_" + ++index;
+                }
+                while (DataSource.DataSources.ContainsKey(initialName));
             }
-            while (DataSource.DataSources.ContainsKey(initialName));
             textBox_SourceName.Text = initialName;
+            if (bNameLocked)
+                textBox_SourceName.ReadOnly = true;
         }
 
         private void listView_DataSourceTypes_DoubleClick(object sender, EventArgs e)

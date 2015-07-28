@@ -39,6 +39,14 @@ namespace CLRGraph
                 CLRGraph_MainForm.self.listView_DataSources.TopItem = CLRGraph_MainForm.self.listView_DataSources.Items[topItemIndex];
         }
 
+        public static DataSource GetSource(string sourceName)
+        {
+            if (sourceName != null && DataSources.ContainsKey(sourceName))
+                return DataSources[sourceName];
+
+            return null;
+        }
+
         private string _SourceName = "";
         public string SourceName
         {

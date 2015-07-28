@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -114,6 +115,7 @@
     </Compile>
     <Compile Include="DataSource_BasicSources.cs" />
     <Compile Include="DataSource_Funcs.cs" />
+    <Compile Include="DataSource_ModelSources.cs" />
     <Compile Include="DataSource_Selector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +137,7 @@
     <Compile Include="GLGraph.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="GraphPoint.cs" />
     <Compile Include="Graph_Funcs.cs" />
     <Compile Include="HullGenerator.cs" />
     <Compile Include="Program.cs" />
@@ -177,6 +180,7 @@
     <None Include="examples\graphscripts\pacman.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="examples\graphscripts\point_transforms.clj" />
     <None Include="examples\graphscripts\runtime_ui_all.clj" />
     <None Include="examples\graphscripts\runtime_ui_buttons.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

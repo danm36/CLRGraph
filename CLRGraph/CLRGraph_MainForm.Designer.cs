@@ -36,7 +36,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.FPSCounterLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
-            this.glGraph = new CLRGraph.GLGraph();
             this.splitContainer_Right = new System.Windows.Forms.SplitContainer();
             this.tabControl_sidebar = new System.Windows.Forms.TabControl();
             this.tabPage_GraphScript = new System.Windows.Forms.TabPage();
@@ -65,7 +64,6 @@
             this.toolStripButton_AddDataSource = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_RemoveDataSource = new System.Windows.Forms.ToolStripButton();
             this.tabPage_RuntimeUI = new System.Windows.Forms.TabPage();
-            this.clojureDefinedUI = new CLRGraph.ClojureDefinedUI();
             this.textBox_Log = new System.Windows.Forms.TextBox();
             this.splitter_Log = new System.Windows.Forms.Splitter();
             this.textBox_RuntimeREPL = new System.Windows.Forms.TextBox();
@@ -108,6 +106,9 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_ResetCameraFocus = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_ResetCamera = new System.Windows.Forms.ToolStripButton();
+            this.glGraph = new CLRGraph.GLGraph();
+            this.clojureDefinedUI = new CLRGraph.ClojureDefinedUI();
+            this.toolStripButton_ReplaceDataSource = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
@@ -194,15 +195,6 @@
             this.splitContainer_Main.Size = new System.Drawing.Size(784, 466);
             this.splitContainer_Main.SplitterDistance = 413;
             this.splitContainer_Main.TabIndex = 2;
-            // 
-            // glGraph
-            // 
-            this.glGraph.BackColor = System.Drawing.Color.White;
-            this.glGraph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.glGraph.Location = new System.Drawing.Point(0, 0);
-            this.glGraph.Name = "glGraph";
-            this.glGraph.Size = new System.Drawing.Size(413, 466);
-            this.glGraph.TabIndex = 0;
             // 
             // splitContainer_Right
             // 
@@ -441,7 +433,8 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton_AddDataSource,
-            this.toolStripButton_RemoveDataSource});
+            this.toolStripButton_RemoveDataSource,
+            this.toolStripButton_ReplaceDataSource});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(359, 25);
@@ -452,8 +445,8 @@
             this.toolStripButton_AddDataSource.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_AddDataSource.Image")));
             this.toolStripButton_AddDataSource.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_AddDataSource.Name = "toolStripButton_AddDataSource";
-            this.toolStripButton_AddDataSource.Size = new System.Drawing.Size(115, 22);
-            this.toolStripButton_AddDataSource.Text = "Add Data Source";
+            this.toolStripButton_AddDataSource.Size = new System.Drawing.Size(49, 22);
+            this.toolStripButton_AddDataSource.Text = "Add";
             this.toolStripButton_AddDataSource.Click += new System.EventHandler(this.toolStripButton_AddDataSource_Click);
             // 
             // toolStripButton_RemoveDataSource
@@ -461,8 +454,8 @@
             this.toolStripButton_RemoveDataSource.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_RemoveDataSource.Image")));
             this.toolStripButton_RemoveDataSource.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_RemoveDataSource.Name = "toolStripButton_RemoveDataSource";
-            this.toolStripButton_RemoveDataSource.Size = new System.Drawing.Size(136, 22);
-            this.toolStripButton_RemoveDataSource.Text = "Remove Data Source";
+            this.toolStripButton_RemoveDataSource.Size = new System.Drawing.Size(70, 22);
+            this.toolStripButton_RemoveDataSource.Text = "Remove";
             this.toolStripButton_RemoveDataSource.Click += new System.EventHandler(this.toolStripButton_RemoveDataSource_Click);
             // 
             // tabPage_RuntimeUI
@@ -474,16 +467,6 @@
             this.tabPage_RuntimeUI.TabIndex = 4;
             this.tabPage_RuntimeUI.Text = "Runtime UI";
             this.tabPage_RuntimeUI.UseVisualStyleBackColor = true;
-            // 
-            // clojureDefinedUI
-            // 
-            this.clojureDefinedUI.BackColor = System.Drawing.SystemColors.Control;
-            this.clojureDefinedUI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clojureDefinedUI.Font = new System.Drawing.Font("Consolas", 8F);
-            this.clojureDefinedUI.Location = new System.Drawing.Point(0, 0);
-            this.clojureDefinedUI.Name = "clojureDefinedUI";
-            this.clojureDefinedUI.Size = new System.Drawing.Size(359, 217);
-            this.clojureDefinedUI.TabIndex = 0;
             // 
             // textBox_Log
             // 
@@ -589,7 +572,7 @@
             this.toolStripButton_ShowAxesInColor});
             this.toolStrip_GraphControl.Location = new System.Drawing.Point(3, 0);
             this.toolStrip_GraphControl.Name = "toolStrip_GraphControl";
-            this.toolStrip_GraphControl.Size = new System.Drawing.Size(211, 25);
+            this.toolStrip_GraphControl.Size = new System.Drawing.Size(180, 25);
             this.toolStrip_GraphControl.TabIndex = 1;
             // 
             // toolStripDropDownButton_LineThickness
@@ -892,6 +875,34 @@
             this.toolStripButton_ResetCamera.Text = "Reset Camera";
             this.toolStripButton_ResetCamera.Click += new System.EventHandler(this.toolStripButton_ResetCamera_Click);
             // 
+            // glGraph
+            // 
+            this.glGraph.BackColor = System.Drawing.Color.White;
+            this.glGraph.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.glGraph.Location = new System.Drawing.Point(0, 0);
+            this.glGraph.Name = "glGraph";
+            this.glGraph.Size = new System.Drawing.Size(413, 466);
+            this.glGraph.TabIndex = 0;
+            // 
+            // clojureDefinedUI
+            // 
+            this.clojureDefinedUI.BackColor = System.Drawing.SystemColors.Control;
+            this.clojureDefinedUI.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.clojureDefinedUI.Font = new System.Drawing.Font("Consolas", 8F);
+            this.clojureDefinedUI.Location = new System.Drawing.Point(0, 0);
+            this.clojureDefinedUI.Name = "clojureDefinedUI";
+            this.clojureDefinedUI.Size = new System.Drawing.Size(359, 217);
+            this.clojureDefinedUI.TabIndex = 0;
+            // 
+            // toolStripButton_ReplaceDataSource
+            // 
+            this.toolStripButton_ReplaceDataSource.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_ReplaceDataSource.Image")));
+            this.toolStripButton_ReplaceDataSource.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_ReplaceDataSource.Name = "toolStripButton_ReplaceDataSource";
+            this.toolStripButton_ReplaceDataSource.Size = new System.Drawing.Size(68, 22);
+            this.toolStripButton_ReplaceDataSource.Text = "Replace";
+            this.toolStripButton_ReplaceDataSource.Click += new System.EventHandler(this.toolStripButton_ReplaceDataSource_Click);
+            // 
             // CLRGraph_MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -968,7 +979,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton_SaveAsGraphScript;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButton_CompileGraphScript;
-        private GLGraph glGraph;
         private System.Windows.Forms.ToolStrip toolStrip_RenderCameraControl;
         private System.Windows.Forms.ToolStripButton toolStripButton_RenderMode2D;
         private System.Windows.Forms.ToolStripButton toolStripButton_RenderMode3DOrth;
@@ -1023,8 +1033,10 @@
         public System.Windows.Forms.ListView listView_DataSources;
         private System.Windows.Forms.ToolStripButton toolStripButton_RemoveDataSource;
         private System.Windows.Forms.TabPage tabPage_RuntimeUI;
-        private ClojureDefinedUI clojureDefinedUI;
         private System.Windows.Forms.ToolStripMenuItem pointCubesToolStripMenuItem;
+        private GLGraph glGraph;
+        private ClojureDefinedUI clojureDefinedUI;
+        private System.Windows.Forms.ToolStripButton toolStripButton_ReplaceDataSource;
     }
 }
 

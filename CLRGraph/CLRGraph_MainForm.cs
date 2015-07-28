@@ -323,7 +323,6 @@ namespace CLRGraph
         #region Data Source Properties
         private void toolStripButton_AddDataSource_Click(object sender, EventArgs e)
         {
-            //Todo: Proper sources dialog
             DataSource_Selector selector = new DataSource_Selector();
 
             if (selector.ShowDialog() != System.Windows.Forms.DialogResult.OK || selector.SourceType == null)
@@ -333,8 +332,6 @@ namespace CLRGraph
 
             if (!source.ShowDataSourceSelector())
                 return;
-
-            //Show name select
 
             DataSource.DataSources.Add(source.SourceName, source);
             DataSource.UpdateDataSourceInfoInUI();
@@ -348,15 +345,35 @@ namespace CLRGraph
                 return;
             }
 
-            //if (MessageBox.Show("Are you sure you want to remove this data source reference?", "Remove Data Source", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == System.Windows.Forms.DialogResult.No)
-            //    return;
-
             DataSource toDelete = ((DataSource)listView_DataSources.SelectedItems[0].Tag);
             DataSource.DataSources.Remove(toDelete.SourceName);
             toDelete.Dispose();
 
             DataSource.UpdateDataSourceInfoInUI();
         }
+
+        private void toolStripButton_ReplaceDataSource_Click(object sender, EventArgs e)
+        {
+            if (listView_DataSources.SelectedItems.Count < 1)
+            {
+                MessageBox.Show("No data source is selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DataSource_Selector selector = new DataSource_Selector(listView_DataSources.SelectedItems[0].Text, true);
+
+            if (selector.ShowDialog() != System.Windows.Forms.DialogResult.OK || selector.SourceType == null)
+                return;
+
+            DataSource source = (DataSource)Activator.CreateInstance(selector.SourceType, selector.SourceName);
+
+            if (!source.ShowDataSourceSelector())
+                return;
+
+            DataSource.DataSources[source.SourceName] = source;
+            DataSource.UpdateDataSourceInfoInUI();
+        }
+
 
         private void listView_DataSources_DoubleClick(object sender, EventArgs e)
         {
