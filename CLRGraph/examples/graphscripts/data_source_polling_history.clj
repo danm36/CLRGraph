@@ -17,15 +17,15 @@
 ;; This is so we don't run out of memory.
 (def history-limit 30)
 
-(start-series-poll (set-series-data-source "DataSource_1" poll-rate))
+(start-series-poll (set-series-data-source "DataSource_1") poll-rate)
 (set-series-draw-mode DrawMode/ConnectedLines)
 (add-new-current-series)
 (set-series-draw-mode DrawMode/Points)
 (start-series-poll
 	(series-poll-history
-		(set-series-data-source "DataSource_1" poll-rate)
+		(set-series-data-source "DataSource_1")
 		enable-poll-history
-		history-offset history-limit))
+		history-offset history-limit) poll-rate)
 
 ;; And add a UI
 (def updatehistorysettings #(do

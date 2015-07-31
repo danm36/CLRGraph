@@ -91,7 +91,9 @@
     <None Include="examples\graphscripts\data_sources.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="examples\graphscripts\data_source_polling_history.clj" />
+    <None Include="examples\graphscripts\data_source_polling_history.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="examples\graphscripts\init.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -180,13 +182,21 @@
     <None Include="examples\graphscripts\pacman.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="examples\graphscripts\point_transforms.clj" />
-    <None Include="examples\graphscripts\runtime_ui_all.clj" />
+    <None Include="examples\graphscripts\point_transforms.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\runtime_ui_all.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="examples\graphscripts\runtime_ui_buttons.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="examples\graphscripts\runtime_ui_dropdown.clj" />
-    <None Include="examples\graphscripts\runtime_ui_numeric.clj" />
+    <None Include="examples\graphscripts\runtime_ui_dropdown.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\runtime_ui_numeric.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="examples\graphscripts\runtime_ui_sliders.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -200,6 +210,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="examples\graphscripts\trig_tube.clj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="examples\graphscripts\_tom_poll.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="functions\random.clj">

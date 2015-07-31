@@ -9,6 +9,114 @@ using System.Windows.Forms;
 
 namespace CLRGraph
 {
+    #region OBJ
+    [DataSourceAttribute("OBJ File (Wavefront OBJ)", "File")]
+    public class DataSource_OBJFile : DataSource
+    {
+        PersistentVector points = null;
+        bool needNewData = false;
+
+        public DataSource_OBJFile(string name)
+            : base(name)
+        {
+
+        }
+
+        public override void GraphReset()
+        {
+            needNewData = true;
+        }
+
+        public override bool NeedToGetNewData(int channel = 0)
+        {
+            bool ret = needNewData;
+            needNewData = false;
+            return ret;
+        }
+
+        public override PersistentVector GetData(int channel = 0)
+        {
+            return points;
+        }
+
+        public override bool ShowDataSourceSelector()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Wavefront OBJ Files (*.obj)|*.obj";
+            ofd.Multiselect = false;
+            ofd.Title = "Select OBJ File";
+
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return false;
+
+            SourceLocation = ofd.FileName;
+
+            using (StreamReader sr = new StreamReader(ofd.FileName))
+            {
+                string line;
+                string[] splLine;
+                List<GraphPoint> newPoints = new List<GraphPoint>();
+
+                double offsetX = 0, offsetY = 0, offsetZ = 0;
+                double scaleX = 1, scaleY = 1, scaleZ = 1;
+
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (line.Length == 0 || (line[0] == '#' && !line.StartsWith("#Auto")))
+                        continue;
+
+                    splLine = line.Split(' ');
+
+                    if (splLine[0] == "#Auto") //Handle ZBrush automatic transforms
+                    {
+                        if (splLine[1] == "scale")
+                        {
+                            scaleX = double.Parse(splLine[2].Substring(2));
+                            scaleY = double.Parse(splLine[3].Substring(2));
+                            scaleZ = double.Parse(splLine[4].Substring(2));
+                        }
+                        else if (splLine[1] == "offset")
+                        {
+                            offsetX = double.Parse(splLine[2].Substring(2));
+                            offsetY = double.Parse(splLine[3].Substring(2));
+                            offsetZ = double.Parse(splLine[4].Substring(2));
+                        }
+                    }
+                    else if (line[0] == 'v')
+                    {
+                        //Note: Right handed co-ords
+                        newPoints.Add(new GraphPoint(   double.Parse(splLine[1]) * scaleX + offsetX,
+                                                        double.Parse(splLine[3]) * scaleZ + offsetZ,
+                                                        double.Parse(splLine[2]) * scaleY + offsetY));
+                    }
+                    else if (line[0] == 'f')
+                    {
+                        int firstPoint = int.Parse(splLine[1]);
+                        int lastPoint = firstPoint;
+                        int curPoint;
+
+                        for (int j = 2; j < splLine.Length; j++)
+                        {
+                            curPoint = int.Parse(splLine[j]);
+                            newPoints[lastPoint - 1].AddEdge(newPoints[curPoint - 1]);
+                            newPoints[curPoint - 1].AddEdge(newPoints[lastPoint - 1]);
+                            lastPoint = curPoint;
+                        }
+
+                        newPoints[lastPoint - 1].AddEdge(newPoints[firstPoint - 1]);
+                    }
+                }
+
+                points = PersistentVector.create1(newPoints);
+                needNewData = true;
+            }
+
+            return true;
+        }
+    }
+    #endregion
+
     #region PLY
     [DataSourceAttribute("PLY File", "File")]
     public class DataSource_PLYFile : DataSource
@@ -110,6 +218,76 @@ namespace CLRGraph
                             newPoints[lastPoint].AddEdge(newPoints[firstPoint]);
                         }
                     }
+                }
+
+                points = PersistentVector.create1(newPoints);
+                needNewData = true;
+            }
+
+            return true;
+        }
+    }
+    #endregion
+
+    #region PTS
+    [DataSourceAttribute("PTS File", "File")]
+    public class DataSource_PTSFile : DataSource
+    {
+        PersistentVector points = null;
+        bool needNewData = false;
+
+        public DataSource_PTSFile(string name)
+            : base(name)
+        {
+
+        }
+
+        public override void GraphReset()
+        {
+            needNewData = true;
+        }
+
+        public override bool NeedToGetNewData(int channel = 0)
+        {
+            bool ret = needNewData;
+            needNewData = false;
+            return ret;
+        }
+
+        public override PersistentVector GetData(int channel = 0)
+        {
+            return points;
+        }
+
+        public override bool ShowDataSourceSelector()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "PTS Files (*.pts)|*.pts";
+            ofd.Multiselect = false;
+            ofd.Title = "Select PTS File";
+
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return false;
+
+            SourceLocation = ofd.FileName;
+
+            using (StreamReader sr = new StreamReader(ofd.FileName))
+            {
+                string line;
+                string[] splLine;
+                List<GraphPoint> newPoints = new List<GraphPoint>();
+
+                line = sr.ReadLine(); //Number of points
+
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    splLine = line.Split(' ');
+
+                    //Right handed coordinate system
+                    newPoints.Add(new GraphPoint(double.Parse(splLine[0]),
+                                                    double.Parse(splLine[2]),
+                                                    double.Parse(splLine[1])));
                 }
 
                 points = PersistentVector.create1(newPoints);
