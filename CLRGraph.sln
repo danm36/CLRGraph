@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLRGraph", "CLRGraph\CLRGraph.csproj", "{955CDD46-514C-4ADC-A787-CD1DBC30E2E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "TestPlugin\ExamplePlugin.csproj", "{2AF015D4-2884-4868-91FE-787DB674026C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomsErosionPatterns", "TomsErosionPatterns\TomsErosionPatterns.csproj", "{FAEE203B-2356-435C-938F-679156B76574}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{955CDD46-514C-4ADC-A787-CD1DBC30E2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{955CDD46-514C-4ADC-A787-CD1DBC30E2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{955CDD46-514C-4ADC-A787-CD1DBC30E2E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF015D4-2884-4868-91FE-787DB674026C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF015D4-2884-4868-91FE-787DB674026C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF015D4-2884-4868-91FE-787DB674026C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF015D4-2884-4868-91FE-787DB674026C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAEE203B-2356-435C-938F-679156B76574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAEE203B-2356-435C-938F-679156B76574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAEE203B-2356-435C-938F-679156B76574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAEE203B-2356-435C-938F-679156B76574}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

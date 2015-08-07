@@ -78,7 +78,7 @@ namespace CLRGraph
         }
         protected bool IsDisposed = false;
 
-        public DataSource(string sourceName)
+        public void Setup(string sourceName)
         {
             if (sourceName == null || sourceName.Trim() == "")
             {
@@ -110,8 +110,8 @@ namespace CLRGraph
         }
 
         public virtual void GraphReset() { }
-        public virtual bool NeedToGetNewData(int channel = 0) { return true; }
-        public abstract PersistentVector GetData(int channel = 0);
+        public virtual bool NeedToGetNewData(int channel) { return true; }
+        public abstract List<GraphPoint> GetData(int channel, double elapsedTime);
 
         public virtual bool ShowDataSourceSelector()
         {

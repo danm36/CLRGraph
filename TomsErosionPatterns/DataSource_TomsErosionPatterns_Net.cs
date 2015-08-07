@@ -1,5 +1,4 @@
-﻿using clojure.lang;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +15,10 @@ namespace CLRGraph
 {
     public partial class DataSource_TomsErosionPatterns_Net_Config : Form
     {
+        private Button button_apply;
+        private Button button_cancel;
+        private Label label1;
+        private NumericUpDown numericUpDown_port;
         public int port = 5000;
 
         public DataSource_TomsErosionPatterns_Net_Config(int nPort)
@@ -35,6 +38,81 @@ namespace CLRGraph
         {
             DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
+
+        private void InitializeComponent()
+        {
+            this.button_apply = new System.Windows.Forms.Button();
+            this.button_cancel = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.numericUpDown_port = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_port)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // button_apply
+            // 
+            this.button_apply.Location = new System.Drawing.Point(12, 40);
+            this.button_apply.Name = "button_apply";
+            this.button_apply.Size = new System.Drawing.Size(75, 23);
+            this.button_apply.TabIndex = 7;
+            this.button_apply.Text = "Apply";
+            this.button_apply.UseVisualStyleBackColor = true;
+            this.button_apply.Click += new System.EventHandler(this.button_apply_Click);
+            // 
+            // button_cancel
+            // 
+            this.button_cancel.Location = new System.Drawing.Point(93, 40);
+            this.button_cancel.Name = "button_cancel";
+            this.button_cancel.Size = new System.Drawing.Size(75, 23);
+            this.button_cancel.TabIndex = 6;
+            this.button_cancel.Text = "Cancel";
+            this.button_cancel.UseVisualStyleBackColor = true;
+            this.button_cancel.Click += new System.EventHandler(this.button_cancel_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Port:";
+            // 
+            // numericUpDown_port
+            // 
+            this.numericUpDown_port.Location = new System.Drawing.Point(47, 12);
+            this.numericUpDown_port.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+            this.numericUpDown_port.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_port.Name = "numericUpDown_port";
+            this.numericUpDown_port.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDown_port.TabIndex = 4;
+            this.numericUpDown_port.Value = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            // 
+            // DataSource_TomsErosionPatterns_Net_Config
+            // 
+            this.ClientSize = new System.Drawing.Size(192, 74);
+            this.Controls.Add(this.button_apply);
+            this.Controls.Add(this.button_cancel);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.numericUpDown_port);
+            this.Name = "DataSource_TomsErosionPatterns_Net_Config";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_port)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
     }
 
     [DataSourceAttribute("Tom's Erosion Pattern Network", "TCP Network")]
@@ -53,8 +131,7 @@ namespace CLRGraph
         bool needLandData = false;
         bool needWaterData = false;
 
-        public DataSource_TomsErosionPatterns_Net(string name)
-            : base(name)
+        public DataSource_TomsErosionPatterns_Net()
         {
             listener = new TcpListener(IPAddress.Any, 10169);
             listener.Start();
@@ -135,13 +212,13 @@ namespace CLRGraph
             return channel == 1 ? needWaterData : needLandData;
         }
 
-        public override PersistentVector GetData(int channel = 0)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
             if (channel == 1)
                 needWaterData = false;
             else
                 needLandData = false;
-            return PersistentVector.create1(channel == 1 ? waterPoints : landPoints);
+            return (channel == 1 ? waterPoints : landPoints);
         }
 
         public override void ShowDataSeriesConfig()

@@ -327,7 +327,7 @@ namespace CLRGraph
                 GL.BindBuffer(BufferTarget.ArrayBuffer, axisVBO);
                 GL.EnableVertexAttribArray(axisShader.vertexAttribLocation);
                 GL.VertexAttribPointer(axisShader.vertexAttribLocation, 4, VertexAttribPointerType.Float, false, 0, 0);
-                GL.DrawArrays(PrimitiveType.Lines, 0, graphAxes.Length);
+                GL.DrawArrays(PrimitiveType.Lines, 0, graphAxes.Length / 4);
                 GL.DisableVertexAttribArray(axisShader.vertexAttribLocation);
             }
 
@@ -337,7 +337,7 @@ namespace CLRGraph
             GL.BindBuffer(BufferTarget.ArrayBuffer, microAxisVBO);
             GL.EnableVertexAttribArray(microAxisShader.vertexAttribLocation);
             GL.VertexAttribPointer(microAxisShader.vertexAttribLocation, 4, VertexAttribPointerType.Float, false, 0, 0);
-            GL.DrawArrays(PrimitiveType.Lines, 0, graphMicroAxes.Length);
+            GL.DrawArrays(PrimitiveType.Lines, 0, graphMicroAxes.Length / 4);
             GL.DisableVertexAttribArray(microAxisShader.vertexAttribLocation);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

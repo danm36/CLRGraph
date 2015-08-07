@@ -64,10 +64,17 @@ namespace CLRGraph
 
             pos = other.pos;
 
-            foreach (int edge in other.pendingEdges)
-                AddEdge(edge);
-            foreach (GraphPoint edge in other.edges)
-                AddEdge(edge);
+            if (other.pendingEdges != null)
+            {
+                foreach (int edge in other.pendingEdges)
+                    AddEdge(edge);
+            }
+
+            if (other.edges != null)
+            {
+                foreach (GraphPoint edge in other.edges)
+                    AddEdge(edge);
+            }
         }
 
         public void AddEdge(int edge)
@@ -315,9 +322,12 @@ namespace CLRGraph
 
             foreach (GraphPoint edge1 in edges)
             {
+                if (edge1.edges == null)
+                    continue;
+
                 foreach (GraphPoint edge2 in edges)
                 {
-                    if (edge1 == edge2)
+                    if (edge1 == edge2 || edge2.edges == null)
                         continue;
 
                     List<GraphPoint> intersection = edge1.edges.Intersect(edge2.edges).ToList();

@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,6 +45,14 @@ namespace CLRGraph
             self = this;
 
             InitializeComponent();
+
+            foreach (string file in Directory.GetFiles("plugins"))
+            {
+                if (!file.EndsWith("dll"))
+                    continue;
+
+                Assembly.LoadFile(Path.GetFullPath(file));
+            }
 
             ClojureEngine.Initialize(textBox_Log);
 
@@ -328,11 +337,12 @@ namespace CLRGraph
             if (selector.ShowDialog() != System.Windows.Forms.DialogResult.OK || selector.SourceType == null)
                 return;
 
-            DataSource source = (DataSource)Activator.CreateInstance(selector.SourceType, selector.SourceName);
+            DataSource source = (DataSource)Activator.CreateInstance(selector.SourceType);
 
             if (!source.ShowDataSourceSelector())
                 return;
 
+            source.Setup(selector.SourceName);
             DataSource.DataSources.Add(source.SourceName, source);
             DataSource.UpdateDataSourceInfoInUI();
         }
@@ -365,11 +375,12 @@ namespace CLRGraph
             if (selector.ShowDialog() != System.Windows.Forms.DialogResult.OK || selector.SourceType == null)
                 return;
 
-            DataSource source = (DataSource)Activator.CreateInstance(selector.SourceType, selector.SourceName);
+            DataSource source = (DataSource)Activator.CreateInstance(selector.SourceType);
 
             if (!source.ShowDataSourceSelector())
                 return;
 
+            source.Setup(selector.SourceName);
             DataSource.DataSources[source.SourceName] = source;
             DataSource.UpdateDataSourceInfoInUI();
         }

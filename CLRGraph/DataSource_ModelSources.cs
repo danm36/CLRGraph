@@ -13,28 +13,22 @@ namespace CLRGraph
     [DataSourceAttribute("OBJ File (Wavefront OBJ)", "File")]
     public class DataSource_OBJFile : DataSource
     {
-        PersistentVector points = null;
+        List<GraphPoint> points = null;
         bool needNewData = false;
-
-        public DataSource_OBJFile(string name)
-            : base(name)
-        {
-
-        }
 
         public override void GraphReset()
         {
             needNewData = true;
         }
 
-        public override bool NeedToGetNewData(int channel = 0)
+        public override bool NeedToGetNewData(int channel)
         {
             bool ret = needNewData;
             needNewData = false;
             return ret;
         }
 
-        public override PersistentVector GetData(int channel = 0)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
             return points;
         }
@@ -108,7 +102,7 @@ namespace CLRGraph
                     }
                 }
 
-                points = PersistentVector.create1(newPoints);
+                points = newPoints;
                 needNewData = true;
             }
 
@@ -121,28 +115,22 @@ namespace CLRGraph
     [DataSourceAttribute("PLY File", "File")]
     public class DataSource_PLYFile : DataSource
     {
-        PersistentVector points = null;
+        List<GraphPoint> points = null;
         bool needNewData = false;
-
-        public DataSource_PLYFile(string name)
-            : base(name)
-        {
-
-        }
 
         public override void GraphReset()
         {
             needNewData = true;
         }
 
-        public override bool NeedToGetNewData(int channel = 0)
+        public override bool NeedToGetNewData(int channel)
         {
             bool ret = needNewData;
             needNewData = false;
             return ret;
         }
 
-        public override PersistentVector GetData(int channel = 0)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
             return points;
         }
@@ -220,7 +208,7 @@ namespace CLRGraph
                     }
                 }
 
-                points = PersistentVector.create1(newPoints);
+                points = newPoints;
                 needNewData = true;
             }
 
@@ -233,28 +221,22 @@ namespace CLRGraph
     [DataSourceAttribute("PTS File", "File")]
     public class DataSource_PTSFile : DataSource
     {
-        PersistentVector points = null;
+        List<GraphPoint> points = null;
         bool needNewData = false;
-
-        public DataSource_PTSFile(string name)
-            : base(name)
-        {
-
-        }
 
         public override void GraphReset()
         {
             needNewData = true;
         }
 
-        public override bool NeedToGetNewData(int channel = 0)
+        public override bool NeedToGetNewData(int channel)
         {
             bool ret = needNewData;
             needNewData = false;
             return ret;
         }
 
-        public override PersistentVector GetData(int channel = 0)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
             return points;
         }
@@ -290,7 +272,7 @@ namespace CLRGraph
                                                     double.Parse(splLine[1])));
                 }
 
-                points = PersistentVector.create1(newPoints);
+                points = newPoints;
                 needNewData = true;
             }
 

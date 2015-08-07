@@ -48,7 +48,9 @@
     <Reference Include="NAudio">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK.GLControl, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,6 +84,7 @@
     </Compile>
     <Compile Include="CMath.cs" />
     <Compile Include="DataSeries.cs" />
+    <Compile Include="Utility.cs" />
     <None Include="examples\graphscripts\cloud_hull.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -116,6 +119,12 @@
       <DependentUpon>DataSource_AudioInput.cs</DependentUpon>
     </Compile>
     <Compile Include="DataSource_BasicSources.cs" />
+    <Compile Include="DataSource_ClojureFunction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataSource_ClojureFunction.Designer.cs">
+      <DependentUpon>DataSource_ClojureFunction.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataSource_Funcs.cs" />
     <Compile Include="DataSource_ModelSources.cs" />
     <Compile Include="DataSource_Selector.cs">
@@ -123,18 +132,6 @@
     </Compile>
     <Compile Include="DataSource_Selector.Designer.cs">
       <DependentUpon>DataSource_Selector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataSource_TomsErosionPatterns.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DataSource_TomsErosionPatterns.Designer.cs">
-      <DependentUpon>DataSource_TomsErosionPatterns.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataSource_TomsErosionPatterns_Net.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DataSource_TomsErosionPatterns_Net.Designer.cs">
-      <DependentUpon>DataSource_TomsErosionPatterns_Net.cs</DependentUpon>
     </Compile>
     <Compile Include="GLGraph.cs">
       <SubType>UserControl</SubType>
@@ -157,14 +154,11 @@
     <EmbeddedResource Include="DataSource_AudioInput.resx">
       <DependentUpon>DataSource_AudioInput.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataSource_ClojureFunction.resx">
+      <DependentUpon>DataSource_ClojureFunction.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSource_Selector.resx">
       <DependentUpon>DataSource_Selector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataSource_TomsErosionPatterns.resx">
-      <DependentUpon>DataSource_TomsErosionPatterns.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataSource_TomsErosionPatterns_Net.resx">
-      <DependentUpon>DataSource_TomsErosionPatterns_Net.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GLGraph.resx">
       <DependentUpon>GLGraph.cs</DependentUpon>
@@ -218,7 +212,7 @@
     <None Include="functions\random.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="functions\surface.clj">
+    <None Include="functions\plots.clj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

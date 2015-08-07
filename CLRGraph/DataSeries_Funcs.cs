@@ -228,7 +228,7 @@ namespace CLRGraph
         [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with a supplied name and color.")]
         public static DataSeries AddNewSeries(PersistentVector initialPoints, string name, Color? color)
         {
-            DataSeries ds = new DataSeries(initialPoints, name, color);
+            DataSeries ds = new DataSeries(Utility.PVtoGPList(initialPoints), name, color);
             UpdateSeriesInfoInUI();
             return ds;
         }
@@ -272,7 +272,7 @@ namespace CLRGraph
         [ClojureStaticMethod("add-new-current-series", "Creates and returns a new series, optionally with a supplied name and color. This series is also set to the current series.")]
         public static DataSeries AddNewCurrentDataSeries(PersistentVector initialPoints, string name, Color? color)
         {
-            DataSeries ds = new DataSeries(initialPoints, name, color);
+            DataSeries ds = new DataSeries(Utility.PVtoGPList(initialPoints), name, color);
             CurrentDataSeries = AllDataSeries.Count - 1;
             UpdateSeriesInfoInUI();
             return ds;

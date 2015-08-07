@@ -31,7 +31,7 @@ namespace CLRGraph
             if (source == null)
                 return null;
 
-            return source.GetData();
+            return PersistentVector.create1(source.GetData(0, 0));
         }
     }
 }

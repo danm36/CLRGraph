@@ -1,4 +1,15 @@
-﻿;;;; Assistant functions for surface management
+﻿;;;; Assistant functions for plotting
+(defn plot
+    "Plots a graph based on the given function, with optional range and precision.
+    If no ranges are supplied, the plot is generated from -1 to 1
+    If no precision is supplied, the precision defaults to 0.1
+    Sets the current series to the resulting points"
+    ([f] (plot -1 1 0.1 f))
+    ([min max f] (plot min max 0.1 f))
+    ([min max precision f]
+        (set-data-points (make-plot-fn min max precision f))
+    )
+)
 
 (defn make-3d-surface-fn
 	"Creates a surface from the supplied function, with optional x and y ranges and precision.

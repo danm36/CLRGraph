@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace CLRGraph
 {
-    public partial class AxisDefiner : Form
+    internal partial class AxisDefiner : Form
     {
         public AxisDefiner(List<String> columns)
             : this(columns, null, null, null)

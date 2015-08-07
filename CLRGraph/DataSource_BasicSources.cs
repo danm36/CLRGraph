@@ -19,24 +19,18 @@ namespace CLRGraph
         int pointCountPerTick = 1000;
         //int pointCountPerTick = 1;
 
-        public DataSource_Random(string name)
-            : base(name)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
-
-        }
-
-        public override PersistentVector GetData(int channel = 0)
-        {
-            GraphPoint[] points = new GraphPoint[pointCountPerTick];
+            List<GraphPoint> points = new List<GraphPoint>(pointCountPerTick);
 
             for (int i = 0; i < pointCountPerTick; i++)
             {
-                points[i] = new GraphPoint(  (random.NextDouble() * (maxX - minX) + minX),
+                points.Add(new GraphPoint(  (random.NextDouble() * (maxX - minX) + minX),
                                             (random.NextDouble() * (maxY - minY) + minY),
-                                            (random.NextDouble() * (maxZ - minZ) + minZ));
+                                            (random.NextDouble() * (maxZ - minZ) + minZ)));
             }
 
-            return PersistentVector.create1(points);
+            return points;
         }
     }
 
@@ -47,15 +41,9 @@ namespace CLRGraph
         double sineIncrement = 0.1;
         int pointCount = 1000;
 
-        public DataSource_SineWave(string name)
-            : base(name)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
-
-        }
-
-        public override PersistentVector GetData(int channel = 0)
-        {
-            GraphPoint[] points = new GraphPoint[pointCount];
+            List<GraphPoint> points = new List<GraphPoint>();
 
             Parallel.For(0, pointCount, (i) =>
                 {
@@ -63,7 +51,7 @@ namespace CLRGraph
                 });
 
             newTime += sineIncrement;
-            return PersistentVector.create1(points);
+            return points;
         }
     }
 
@@ -78,13 +66,7 @@ namespace CLRGraph
         string yaxis = null;
         string zaxis = null;
 
-        public DataSource_CSVFile(string name)
-            : base(name)
-        {
-
-        }
-
-        public override PersistentVector GetData(int channel = 0)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
             List<GraphPoint> points = new List<GraphPoint>();
 
@@ -121,7 +103,7 @@ namespace CLRGraph
                 points.Add(new GraphPoint(x, y, z));
             }
 
-            return PersistentVector.create1(points);
+            return points;
         }
 
         public override bool ShowDataSourceSelector()

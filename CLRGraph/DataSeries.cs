@@ -86,7 +86,7 @@ namespace CLRGraph
         public string Name { get; private set; }
         public Color DrawColor { get; private set; }
         public Shader DrawShader { get; private set; }
-        public PersistentVector DataPoints { get; private set; }
+        public List<GraphPoint> DataPoints { get; private set; }
         public DrawMode DrawMode { get; private set; }
         public ColorMode ColorMode { get; private set; }
         public TransparencyMode TransparencyMode { get; private set; }
@@ -99,6 +99,7 @@ namespace CLRGraph
         private Timer dataSourcePollTimer = null;
         private const int dataSourcePollTimerMin = 10;
         private int lastPollInterval = 1000;
+        private double elapsedPollingTime = 0;
 
         private Matrix4 pointTransform = Matrix4.Identity;
 
@@ -117,23 +118,27 @@ namespace CLRGraph
         {
         }
 
-        public DataSeries(PersistentVector points) : this(points, null, null, null)
+        public DataSeries(List<GraphPoint> points) : this(points, null, null, null)
         {
         }
 
-        public DataSeries(PersistentVector points, Shader shader) : this(points, shader, null, null)
+        public DataSeries(List<GraphPoint> points, Shader shader)
+            : this(points, shader, null, null)
         {
         }
 
-        public DataSeries(PersistentVector points, string name) : this(points, null, name, null)
+        public DataSeries(List<GraphPoint> points, string name)
+            : this(points, null, name, null)
         {
         }
 
-        public DataSeries(PersistentVector points, Shader shader, string name) : this(points, shader, name, null)
+        public DataSeries(List<GraphPoint> points, Shader shader, string name)
+            : this(points, shader, name, null)
         {
         }
 
-        public DataSeries(PersistentVector points, string name, Color? color) : this(points, null, name, color)
+        public DataSeries(List<GraphPoint> points, string name, Color? color)
+            : this(points, null, name, color)
         {
         }
 
@@ -141,10 +146,10 @@ namespace CLRGraph
         {
         }
 
-        public DataSeries(PersistentVector points, Shader shader, string name, Color? color)
+        public DataSeries(List<GraphPoint> points, Shader shader, string name, Color? color)
         {
             if (points == null)
-                points = PersistentVector.EMPTY;
+                points = new List<GraphPoint>();
 
             List<GraphPoint> idCorrection = new List<GraphPoint>();
             int count = 0;
@@ -155,7 +160,7 @@ namespace CLRGraph
                 idCorrection.Add(newPoint);
             }
 
-            DataPoints = PersistentVector.create1(idCorrection);
+            DataPoints = idCorrection;
 
             if (shader == null)
             {
@@ -267,7 +272,7 @@ namespace CLRGraph
 
         public DataSeries ClearDataPoints()
         {
-            DataPoints = PersistentVector.EMPTY;
+            DataPoints.Clear();
             CachedBounds = null;
 
             DataSeries_Funcs.UpdateSeriesInfoInUI();
@@ -275,19 +280,18 @@ namespace CLRGraph
             return this;
         }
 
-        public PersistentVector GetDataPoints()
+        public List<GraphPoint> GetDataPoints()
         {
             return DataPoints;
         }
 
-
-        public int SetDataPoints(List<GraphPoint> newPoints)
+        public PersistentVector GetDataPointsPV()
         {
-            ClearDataPoints();
-            return AddDataPoints(newPoints);
+            return PersistentVector.create1(DataPoints);
         }
 
-        public int SetDataPoints(PersistentVector newPoints)
+
+        public int SetDataPoints(List<GraphPoint> newPoints)
         {
             ClearDataPoints();
             return AddDataPoints(newPoints);
@@ -298,8 +302,7 @@ namespace CLRGraph
             if (newPoints == null || newPoints.Count == 0)
                 return 0;
 
-            List<object> dpList = DataPoints.ToList();
-            int curCount = dpList.Count;
+            int curCount = DataPoints.Count;
 
             int newPointsOldPos = int.MaxValue;
             for (int i = 0; i < newPoints.Count; i++)
@@ -320,9 +323,7 @@ namespace CLRGraph
                     }
                 }
             }
-            dpList.AddRange(newPoints);
-
-            DataPoints = PersistentVector.create1(dpList);// (PersistentVector)DataPoints.asTransient().conj(newPoints.ToArray()).persistent();
+            DataPoints.AddRange(newPoints);
 
             Parallel.For(0, DataPoints.Count, (i) =>
                 {
@@ -334,16 +335,6 @@ namespace CLRGraph
 
             CachedBounds = null;
             return newPoints.Count;
-        }
-
-        public int AddDataPoints(PersistentVector newPoints)
-        {
-            GraphPoint[] points = new GraphPoint[newPoints.count()];
-
-            for (int i = 0; i < points.Length; i++)
-                points[i] = (GraphPoint)newPoints[i];
-
-            return AddDataPoints(points.ToList());
         }
 
         public void ValidateDatapointEdges()
@@ -413,6 +404,7 @@ namespace CLRGraph
                 dataSourcePollTimer = null;
             }
 
+            elapsedPollingTime = 0;
             return this;
         }
 
@@ -441,6 +433,11 @@ namespace CLRGraph
 
             bStillUpdating = true;
 
+            if (dataSourcePollTimer != null)
+                elapsedPollingTime += (double)dataSourcePollTimer.Interval / 1000;
+            else
+                elapsedPollingTime = 0;
+
             if (pollHistoryEnabled)
             {
                 //OffsetPoints(new Vector3(0, 0, (float)pollHistoryOffset));
@@ -448,11 +445,11 @@ namespace CLRGraph
                     p.z += (float)pollHistoryOffset;
                     return p.z < pollHistoryOffset * pollHistoryLimit;
                 });
-                AddDataPoints(dataSource.GetData(dataSourceChannel));
+                AddDataPoints(dataSource.GetData(dataSourceChannel, elapsedPollingTime));
             }
             else
             {
-                SetDataPoints(dataSource.GetData(dataSourceChannel));
+                SetDataPoints(dataSource.GetData(dataSourceChannel, elapsedPollingTime));
             }
 
             bStillUpdating = false;
@@ -700,7 +697,7 @@ namespace CLRGraph
             });
 
             DataPoints = PersistentVector.create1(remaining);*/
-            DataPoints = PersistentVector.create1(DataPoints.Where(p => func.Invoke((GraphPoint)p)).ToList());
+            DataPoints = DataPoints.Where(p => func.Invoke((GraphPoint)p)).ToList();
 
             return this;
         }

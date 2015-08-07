@@ -270,10 +270,6 @@ namespace CLRGraph
                 return;
             }
 
-            //Temp
-            DBG_AddCurrentFaceState("itr_" + iteration);
-            //End Temp
-
             List<GraphPoint> pointsNeedingReassign = new List<GraphPoint>();
 
             GraphPoint furthestPoint = null;
@@ -342,11 +338,6 @@ namespace CLRGraph
                 if (!edges.Contains(litFaces[i].ca))
                     horizonPairs.Add(new Tuple<GraphPoint, GraphPoint>(litFaces[i].c, litFaces[i].a));
             }
-
-            //Temp
-            DBG_AddCurrentFaceState("itr_" + iteration + "_nolit");
-            //End Temp
-
 
             List<HullFace> newFaces = new List<HullFace>();
             //Create new faces
@@ -418,27 +409,6 @@ namespace CLRGraph
             return new Vector3( (p1.X + p2.X + p3.X) / 3,
                                 (p1.Y + p2.Y + p3.Y) / 3,
                                 (p1.Z + p2.Z + p3.Z) / 3);
-        }
-
-        private static void DBG_AddCurrentFaceState(string name)
-        {
-            return;
-
-            List<GraphPoint> itrPoints = new List<GraphPoint>();
-            for (int i = 0; i < ActiveFaces.Count; i++)
-            {
-                GraphPoint a = new GraphPoint(ActiveFaces[i].a);
-                GraphPoint b = new GraphPoint(ActiveFaces[i].b);
-                GraphPoint c = new GraphPoint(ActiveFaces[i].c);
-                a.AddEdges(b, c);
-                b.AddEdges(a, c);
-                c.AddEdges(a, b);
-
-                itrPoints.Add(a);
-                itrPoints.Add(b);
-                itrPoints.Add(c);
-            }
-            new DataSeries(PersistentVector.create1(itrPoints), name);
         }
     }
 }

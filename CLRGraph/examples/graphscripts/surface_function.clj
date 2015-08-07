@@ -14,7 +14,8 @@
 	"Z = X * Exp(-X^2 - Y^2)"	"#(* x (CMath/Exp (- (* x x -1) (* y y))))"
 	"[Waves] Z = 0.1 * Cos(Sqrt((X^2 + Y^2) * 128))" "#(* 0.1 (CMath/Cos (CMath/Sqrt (* (+ (* x x) (* y y)) 128))))"
 	"[Droplet] Z = 0.5 * (1 / Exp(Sqrt((X^2 + Y^2) * 128))) * Cos(Sqrt((X^2 + Y^2) * 128))" "#(* 0.5 (/ 1 (CMath/Exp (CMath/Sqrt (* (+ (* x x) (* y y)) 4)))) (CMath/Cos (CMath/Sqrt (* (+ (* x x) (* y y)) 128))))"
-	])
+	"[Inverted Waves] Z = Sin(x * y * 32) * 0.1"  "#(* (CMath/Sin (* x y 32)) 0.1)"
+     ])
 
 ;; Change these to change the start and end values to feed into
 ;; the function

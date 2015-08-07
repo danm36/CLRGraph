@@ -135,9 +135,18 @@ namespace CLRGraph
 
         private static void LoadClojureFuncsFromAssembly(Assembly assembly)
         {
-            Type[] types = (from type in assembly.GetTypes()
-                     where Attribute.IsDefined(type, typeof(ClojureImport))
-                     select type).ToArray();
+            Type[] types = null;
+            try
+            {
+                types = (from type in assembly.GetTypes()
+                                where Attribute.IsDefined(type, typeof(ClojureImport))
+                                select type).ToArray();
+            }
+            catch
+            {
+                MessageBox.Show("Could not load types from plugin '" + assembly.Location + "'.\n\nPlease fix or remove the plugin from the plugins directory.\n\nThis plugin will be skipped,", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             for (int i = 0; i < types.Length; i++)
                 runtimeImports.Add(types[i]);
@@ -171,7 +180,7 @@ namespace CLRGraph
                             paramNames.Add(parameters[p].Name);
                     }
 
-                    AddRuntimeMethod(attr.Name, attr.DocString, parameters.Length, clojureCode, paramNames);
+                    AddRuntimeMethod(attr.FunctionName, attr.DocString, parameters.Length, clojureCode, paramNames);
                 }
             }
         }
@@ -251,6 +260,34 @@ namespace CLRGraph
             logControl.Clear();
         }
 
+        public static object EvalRaw(string toEval)
+        {
+            try
+            {
+                return RT_Eval.invoke(RT_ReadString.invoke(toEval));
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+                GLGraph.Redraw();
+                return false;
+            }
+        }
+
+        public static object EvalRet(string toEval)
+        {
+            try
+            {
+                return RT_Eval.invoke(RT_ReadString.invoke(String.Format(Clojure_EvalString, toEval)));
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+                GLGraph.Redraw();
+                return false;
+            }
+        }
+
         public static bool Eval(string toEval, bool dontShowUserInpot = false, bool resetREPL = false)
         {
             try
@@ -272,7 +309,7 @@ namespace CLRGraph
                     }
                 }
 
-                PersistentVector evalResult = (PersistentVector)RT_Eval.invoke(RT_ReadString.invoke(String.Format(Clojure_EvalString, toEval)));
+                PersistentVector evalResult = (PersistentVector)EvalRet(toEval);
 
                 if (evalResult != null)
                 {
@@ -341,12 +378,12 @@ namespace CLRGraph
     [AttributeUsage(AttributeTargets.Method)]
     public class ClojureStaticMethod : Attribute
     {
-        public string Name;
+        public string FunctionName;
         public string DocString = "";
 
-        public ClojureStaticMethod(string name, string docString)
+        public ClojureStaticMethod(string functionName, string docString)
         {
-            Name = name;
+            FunctionName = functionName;
             DocString = docString;
         }
     }

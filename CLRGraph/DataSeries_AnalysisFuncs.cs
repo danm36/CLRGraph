@@ -22,9 +22,9 @@ namespace CLRGraph
         {
             Vector3 averageCoord = new Vector3();
             int pointCount = series.GetPointCount();
-            PersistentVector pointVec = series.GetDataPoints();
+            List<GraphPoint> points = series.GetDataPoints();
 
-            foreach (object point in pointVec)
+            foreach (object point in points)
             {
                 averageCoord.X += ((GraphPoint)point).x;
                 averageCoord.Y += ((GraphPoint)point).y;

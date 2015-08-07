@@ -70,8 +70,7 @@ namespace CLRGraph
         byte[] rawData = null;
         int audioSource = 0;
 
-        public DataSource_AudioInput(string name)
-            : base(name)
+        public DataSource_AudioInput()
         {
             SetupAudioSource();
         }
@@ -109,19 +108,19 @@ namespace CLRGraph
             SetupAudioSource();
         }
 
-        public override PersistentVector GetData(int channel = 0)
+        public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
             if (rawData == null)
                 return null;
 
-            GraphPoint[] points = new GraphPoint[rawData.Length / 2];
+            List<GraphPoint> points = new List<GraphPoint>(rawData.Length / 2);
 
-            Parallel.For(0, points.Length, (i) =>
+            Parallel.For(0, rawData.Length / 2, (i) =>
             {
-                points[i] = new GraphPoint((double)i / 32, ((double)BitConverter.ToInt16(rawData, i * 2) / 4096), 0);
+                points.Add(new GraphPoint((double)i / 32, ((double)BitConverter.ToInt16(rawData, i * 2) / 4096), 0));
             });
 
-            return PersistentVector.create1(points);
+            return points;
         }
     }
 }

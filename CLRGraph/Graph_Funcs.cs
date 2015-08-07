@@ -217,6 +217,84 @@ namespace CLRGraph
             return graphPoints;
         }
 
+        [ClojureStaticMethod("make-plot", "Creates a 2D plot from the given points")]
+        public static List<GraphPoint> MakePlot(int xStart, double increment, IList vals)
+        {
+            List<GraphPoint> points = new List<GraphPoint>();
+
+            for (int i = 0; i < vals.Count; i++)
+            {
+                points.Add(new GraphPoint(xStart + ((double)i * increment), double.Parse(vals[i].ToString()), 0));
+            }
+
+            return points;
+        }
+
+        [ClojureStaticMethod("make-plot-fn", "Creates a 2D plot from the given points")]
+        public static List<GraphPoint> MakePlotFN(double xStart, double xEnd, double precision, IFn function)
+        {
+            return MakePlotFN(xStart, xEnd, precision, function, 0);
+        }
+
+        [ClojureStaticMethod("make-plot-fn", "Creates a 2D plot from the given points")]
+        public static List<GraphPoint> MakePlotFN(double xStart, double xEnd, double precision, IFn function, double elapsedTime)
+        {
+            List<GraphPoint> points = new List<GraphPoint>();
+
+            for (double x = xStart; x <= xEnd; x += precision)
+            {
+                try
+                {
+                    points.Add(new GraphPoint(x, (double)function.invoke(x, 0, 0, elapsedTime), 0));
+                }
+                catch { }
+            }
+
+            return points;
+        }
+
+        [ClojureStaticMethod("make-plot-3d-fn", "Creates a 2D plot from the given points")]
+        public static List<GraphPoint> MakePlot3DFN(double xStart, double xEnd, double precision, IFn functionY, IFn functionZ)
+        {
+            return MakePlot3DFN(xStart, xEnd, precision, functionY, functionZ, 0);
+        }
+
+        [ClojureStaticMethod("make-plot-3d-fn", "Creates a 2D plot from the given points")]
+        public static List<GraphPoint> MakePlot3DFN(double xStart, double xEnd, double precision, IFn functionY, IFn functionZ, double elapsedTime)
+        {
+            List<GraphPoint> points = new List<GraphPoint>();
+
+            if(functionY == null && functionZ == null)
+                return points;
+
+            if(functionY != null && functionZ != null)
+            {
+                for (double x = xStart; x <= xEnd; x += precision)
+                {
+                    try { points.Add(new GraphPoint(x, (double)functionY.invoke(x, 0, 0, elapsedTime),(double)functionZ.invoke(x, 0, 0, elapsedTime))); }
+                    catch { }
+                }
+            }
+            else if (functionY == null)
+            {
+                for (double x = xStart; x <= xEnd; x += precision)
+                {
+                    try { points.Add(new GraphPoint(x, 0, (double)functionZ.invoke(x, 0, 0, elapsedTime))); }
+                    catch { }
+                }
+            }
+            else if (functionZ == null)
+            {
+                for (double x = xStart; x <= xEnd; x += precision)
+                {
+                    try { points.Add(new GraphPoint(x, (double)functionY.invoke(x, 0, 0, elapsedTime), 0)); }
+                    catch { }
+                }
+            }
+
+            return points;
+        }
+
         [ClojureStaticMethod("make-3d-surface", "Creates and returns a set of points forming a square surface with the given Y values, optionally centered on the axes")]
         public static List<GraphPoint> Make3DSurface(int xCount, int zCount, IList vals)
         {
@@ -294,7 +372,7 @@ namespace CLRGraph
         [ClojureStaticMethod("get-data-points", "Returns a vector of all the graph points in the given series (Defaults to the current series)")]
         public static PersistentVector GetDataPoints(DataSeries series)
         {
-            return (series ?? DataSeries_Funcs.GetCurrentDataSeries()).DataPoints;
+            return PersistentVector.create1((series ?? DataSeries_Funcs.GetCurrentDataSeries()).DataPoints);
         }
 
         [ClojureStaticMethod("get-data-points", "Returns a vector of all the graph points in the given series (Defaults to the current series)")]
@@ -305,7 +383,7 @@ namespace CLRGraph
             if (ds == null)
                 return PersistentVector.EMPTY;
 
-            return ds.DataPoints;
+            return PersistentVector.create1(ds.DataPoints);
         }
 
         [ClojureStaticMethod("add-data-points", "Adds the given points to the current series")]
