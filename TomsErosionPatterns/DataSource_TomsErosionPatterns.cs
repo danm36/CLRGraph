@@ -14,7 +14,10 @@ namespace CLRGraph
     [DataSourceAttribute("Tom's Erosion Pattern", "File")]
     public class DataSource_TomsErosionPatterns : DataSource
     {
-        List<GraphPoint>[] points = new List<GraphPoint>[10];
+        const int pointGroupCount = 10;
+
+        List<GraphPoint>[] points = new List<GraphPoint>[pointGroupCount];
+        bool[] needToGetPoints = new bool[pointGroupCount];
 
         public DataSource_TomsErosionPatterns()
         {
@@ -22,9 +25,22 @@ namespace CLRGraph
                 points[i] = new List<GraphPoint>();
         }
 
+        public override void GraphReset()
+        {
+            for (int i = 0; i < pointGroupCount; i++)
+                needToGetPoints[i] = true;
+        }
+
+        public override bool NeedToGetNewData(int channel)
+        {
+            return needToGetPoints[channel];
+        }
+
         public override List<GraphPoint> GetData(int channel, double elapsedTime)
         {
-            return points[Math.Min(points.Length - 1, Math.Max(channel, 0))];
+            channel = Math.Min(points.Length - 1, Math.Max(channel, 0));
+            needToGetPoints[channel] = false;
+            return points[channel];
         }
 
         public override bool ShowDataSourceSelector()
@@ -68,14 +84,18 @@ namespace CLRGraph
                         for (int x = 0; x < xCount; x++)
                         {
                             char chr = line[x + y * xCount + z * yCount * xCount];
+                            int channel = 0;
                             if (char.IsDigit(chr))
-                                points[(int)char.GetNumericValue(line[x + y * xCount + z * yCount * xCount])].Add(new GraphPoint(x, y, z));
-                            else
-                                points[0].Add(new GraphPoint(x, y, z));
+                                channel = (int)char.GetNumericValue(line[x + y * xCount + z * yCount * xCount]);
+
+                            points[channel].Add(new GraphPoint(x, y, z));
                         }
                     }
                 }
             }
+
+            for (int i = 0; i < pointGroupCount; i++)
+                needToGetPoints[i] = true;
 
             return true;
         }

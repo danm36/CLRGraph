@@ -16,7 +16,7 @@ namespace CLRGraph
         public float z { get { return pos.Z; } set { pos.Z = value; } }
 
         public HashSet<int> pendingEdges = null;
-        public HashSet<GraphPoint> edges = null;
+        public List<GraphPoint> edges = null;
         public bool hasSetIndices = false;
 
         public GraphPoint(Vector3 nPos)
@@ -88,9 +88,10 @@ namespace CLRGraph
         public void AddEdge(GraphPoint edge)
         {
             if (edges == null)
-                edges = new HashSet<GraphPoint>();
+                edges = new List<GraphPoint>();
 
-            edges.Add(edge);
+            if (!edges.Contains(edge))
+                edges.Add(edge);
         }
 
         public void AddEdges(IList<int> nEdges)
@@ -107,34 +108,23 @@ namespace CLRGraph
         public void AddEdges(IList<GraphPoint> nEdges)
         {
             if (edges == null)
-                edges = new HashSet<GraphPoint>();
+                edges = new List<GraphPoint>();
 
             for (int i = 0; i < nEdges.Count; i++)
             {
-                edges.Add(nEdges[i]);
+                if(!edges.Contains(nEdges[i]))
+                    edges.Add(nEdges[i]);
             }
         }
 
         public void AddEdges(params int[] nEdges)
         {
-            if (pendingEdges == null)
-                pendingEdges = new HashSet<int>();
-
-            for (int i = 0; i < nEdges.Length; i++)
-            {
-                pendingEdges.Add(nEdges[i]);
-            }
+            AddEdges(nEdges.ToList());
         }
 
         public void AddEdges(params GraphPoint[] nEdges)
         {
-            if (edges == null)
-                edges = new HashSet<GraphPoint>();
-
-            for (int i = 0; i < nEdges.Length; i++)
-            {
-                edges.Add(nEdges[i]);
-            }
+            AddEdges(nEdges.ToList());
         }
 
         public double DistanceFrom(GraphPoint other)
@@ -235,8 +225,12 @@ namespace CLRGraph
                 case DrawMode.Triangles:
                     if (edges != null)
                     {
+                        List<GraphPoint> alreadyMadeEdgesWith = new List<GraphPoint>();
                         foreach (GraphPoint point in edges)
-                            indices.AddRange(FormTrianglesWith(point));
+                        {
+                            indices.AddRange(FormTrianglesWith(point, alreadyMadeEdgesWith));
+                            //alreadyMadeEdgesWith.Add(point);
+                        }
                     }
                     break;
 
@@ -291,7 +285,7 @@ namespace CLRGraph
             return indices;
         }
 
-        public List<uint> FormTrianglesWith(GraphPoint other, bool bForQuadRendering = false)
+        public List<uint> FormTrianglesWith(GraphPoint other, List<GraphPoint> alreadyMadeEdgesWith, bool bForQuadRendering = false)
         {
             List<uint> results = new List<uint>();
             if (edges == null || other.edges == null || other.hasSetIndices)
@@ -301,7 +295,7 @@ namespace CLRGraph
 
             for (int i = 0; i < intersection.Count; i++)
             {
-                if (intersection[i].hasSetIndices || intersection[i] == this || intersection[i] == other)
+                if (intersection[i].hasSetIndices || intersection[i] == this || intersection[i] == other || alreadyMadeEdgesWith.Contains(intersection[i]))
                     continue;
 
                 if (bForQuadRendering)

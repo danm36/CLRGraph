@@ -348,15 +348,33 @@ namespace CLRGraph
                         testYVal = 0;
                     }
 
-                    indices = new List<int>();
+                    /*indices = new List<int>();
                     if (z < zCount - 1 && x < xCount - 1)
                     {
                         indices.Add((z + 1) * xCount + x + 0);
                         indices.Add((z + 1) * xCount + x + 1);
                         indices.Add((z + 0) * xCount + x + 1);
                     }
+                    */
 
-                    points.Add(new GraphPoint((((double)x / xCount) * width) + xStart, testYVal, (((double)z / zCount) * depth) + zStart, indices));
+                    points.Add(new GraphPoint((((double)x / xCount) * width) + xStart, testYVal, (((double)z / zCount) * depth) + zStart));
+                }
+            }
+
+            for (int z = 0; z < zCount - 1; z++)
+            {
+                for (int x = 0; x < xCount - 1; x++)
+                {
+                    List<GraphPoint> edges = new List<GraphPoint>();
+                    edges.Add(points[(z + 1) * xCount + x + 0]);
+                    edges.Add(points[(z + 1) * xCount + x + 1]);
+                    edges.Add(points[(z + 0) * xCount + x + 1]);
+
+                    points[(z + 1) * xCount + x + 0].AddEdge(points[z * xCount + x]);
+                    points[(z + 1) * xCount + x + 1].AddEdge(points[z * xCount + x]);
+                    points[(z + 0) * xCount + x + 1].AddEdge(points[z * xCount + x]);
+
+                    points[z * xCount + x].AddEdges(edges);
                 }
             }
 

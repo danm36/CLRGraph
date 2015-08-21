@@ -20,14 +20,18 @@ namespace CLRGraph
 
     public partial class DataSource_ClojureFunction_Config : Form
     {
+        DataSource_ClojureFunction owner = null;
+
         public double MinX = -1, MaxX = 1, MinY = -1, MaxY = 1, Precision = 0.1;
 
         public string ClojureFunction1 = "";
         public string ClojureFunction2 = "";
 
-        public DataSource_ClojureFunction_Config(double minX, double maxX, double minY, double maxY, double precision, string clojureFunction1, string clojureFunction2)
+        public DataSource_ClojureFunction_Config(DataSource_ClojureFunction nOwner, double minX, double maxX, double minY, double maxY, double precision, string clojureFunction1, string clojureFunction2)
         {
             InitializeComponent();
+
+            owner = nOwner;
 
             numericUpDown_minX.Value = (decimal)(MinX = minX);
             numericUpDown_maxX.Value = (decimal)(MaxX = maxX);
@@ -41,8 +45,6 @@ namespace CLRGraph
 
         private void button_apply_Click(object sender, EventArgs e)
         {
-            DialogResult = System.Windows.Forms.DialogResult.OK;
-
             MinX = (double)numericUpDown_minX.Value;
             MaxX = (double)numericUpDown_maxX.Value;
             Precision = (double)numericUpDown_precision.Value;
@@ -50,12 +52,12 @@ namespace CLRGraph
             ClojureFunction1 = textBox_plot1.Text;
             ClojureFunction2 = textBox_plot2.Text;
 
-            Close();
+            owner.UpdateSettings(this);
         }
 
-        private void button_cancel_Click(object sender, EventArgs e)
+        private void button_close_Click(object sender, EventArgs e)
         {
-            DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
         }
     }
@@ -75,20 +77,31 @@ namespace CLRGraph
         double precision = 0.1;
         DataSource_ClojureFunction_Mode drawMode = DataSource_ClojureFunction_Mode.Mode_2D_Plot;
 
+        public override bool ShowDataSourceSelector()
+        {
+            Timer t = new Timer();
+            t.Interval = 5;
+            t.Tick += (s, e) => { t.Stop(); t.Dispose(); t = null; ShowDataSeriesConfig(); };
+            t.Start();
+            return true;
+        }
+
         public override void ShowDataSeriesConfig()
         {
-            DataSource_ClojureFunction_Config config = new DataSource_ClojureFunction_Config(minXVal, maxXVal, minYVal, maxYVal, precision, clojureFunctionText1, clojureFunctionText2);
-            if (config.ShowDialog() != DialogResult.OK)
-                return;
+            DataSource_ClojureFunction_Config config = new DataSource_ClojureFunction_Config(this, minXVal, maxXVal, minYVal, maxYVal, precision, clojureFunctionText1, clojureFunctionText2);
+            config.Show();
+        }
 
-            minXVal = config.MinX;
-            maxXVal = config.MaxX;
-            minYVal = config.MinY;
-            maxYVal = config.MaxY;
-            precision = config.Precision;
+        public void UpdateSettings(DataSource_ClojureFunction_Config sender)
+        {
+            minXVal = sender.MinX;
+            maxXVal = sender.MaxX;
+            minYVal = sender.MinY;
+            maxYVal = sender.MaxY;
+            precision = sender.Precision;
 
-            clojureFunctionText1 = config.ClojureFunction1.Trim();
-            clojureFunctionText2 = config.ClojureFunction2.Trim();
+            clojureFunctionText1 = sender.ClojureFunction1.Trim();
+            clojureFunctionText2 = sender.ClojureFunction2.Trim();
 
             clojureFunction1 = null;
             clojureFunction2 = null;

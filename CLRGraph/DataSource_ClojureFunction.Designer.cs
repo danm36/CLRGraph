@@ -37,7 +37,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button_apply = new System.Windows.Forms.Button();
-            this.button_cancel = new System.Windows.Forms.Button();
+            this.button_close = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.numericUpDown_precision = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_maxX = new System.Windows.Forms.NumericUpDown();
@@ -79,6 +79,8 @@
             // 
             // textBox_plot1
             // 
+            this.textBox_plot1.AcceptsReturn = true;
+            this.textBox_plot1.AcceptsTab = true;
             this.textBox_plot1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_plot1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_plot1.Location = new System.Drawing.Point(0, 23);
@@ -120,6 +122,8 @@
             // 
             // textBox_plot2
             // 
+            this.textBox_plot2.AcceptsReturn = true;
+            this.textBox_plot2.AcceptsTab = true;
             this.textBox_plot2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_plot2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_plot2.Location = new System.Drawing.Point(0, 23);
@@ -141,7 +145,7 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.button_apply);
-            this.panel1.Controls.Add(this.button_cancel);
+            this.panel1.Controls.Add(this.button_close);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 411);
             this.panel1.Name = "panel1";
@@ -150,6 +154,7 @@
             // 
             // button_apply
             // 
+            this.button_apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button_apply.Location = new System.Drawing.Point(456, 3);
             this.button_apply.Name = "button_apply";
             this.button_apply.Size = new System.Drawing.Size(75, 23);
@@ -158,15 +163,16 @@
             this.button_apply.UseVisualStyleBackColor = true;
             this.button_apply.Click += new System.EventHandler(this.button_apply_Click);
             // 
-            // button_cancel
+            // button_close
             // 
-            this.button_cancel.Location = new System.Drawing.Point(537, 3);
-            this.button_cancel.Name = "button_cancel";
-            this.button_cancel.Size = new System.Drawing.Size(75, 23);
-            this.button_cancel.TabIndex = 0;
-            this.button_cancel.Text = "Cancel";
-            this.button_cancel.UseVisualStyleBackColor = true;
-            this.button_cancel.Click += new System.EventHandler(this.button_cancel_Click);
+            this.button_close.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_close.Location = new System.Drawing.Point(537, 3);
+            this.button_close.Name = "button_close";
+            this.button_close.Size = new System.Drawing.Size(75, 23);
+            this.button_close.TabIndex = 0;
+            this.button_close.Text = "Close";
+            this.button_close.UseVisualStyleBackColor = true;
+            this.button_close.Click += new System.EventHandler(this.button_close_Click);
             // 
             // panel2
             // 
@@ -318,7 +324,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button_apply;
-        private System.Windows.Forms.Button button_cancel;
+        private System.Windows.Forms.Button button_close;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.NumericUpDown numericUpDown_precision;
         private System.Windows.Forms.NumericUpDown numericUpDown_maxX;

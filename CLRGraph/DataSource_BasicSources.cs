@@ -34,28 +34,6 @@ namespace CLRGraph
         }
     }
 
-    [DataSourceAttribute("Sine Wave", "Over Time")]
-    public class DataSource_SineWave : DataSource
-    {
-        double newTime = 0;
-        double sineIncrement = 0.1;
-        int pointCount = 1000;
-
-        public override List<GraphPoint> GetData(int channel, double elapsedTime)
-        {
-            List<GraphPoint> points = new List<GraphPoint>();
-
-            Parallel.For(0, pointCount, (i) =>
-                {
-                    points[i] = new GraphPoint(i * sineIncrement, Math.Sin(i * sineIncrement + newTime), 0);
-                });
-
-            newTime += sineIncrement;
-            return points;
-        }
-    }
-
-
     [DataSourceAttribute("CSV File", "File")]
     public class DataSource_CSVFile : DataSource
     {

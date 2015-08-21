@@ -32,7 +32,6 @@ namespace CLRGraph
             }
 
             averageCoord /= pointCount;
-            ClojureEngine.Log("Average co-ord for series " + series.Name + " is X: " + averageCoord.X + ", Y: " + averageCoord.Y + ", Z: " + averageCoord.Z);
             return new GraphPoint(averageCoord);
         }
     }
