@@ -46,12 +46,15 @@ namespace CLRGraph
 
             InitializeComponent();
 
-            foreach (string file in Directory.GetFiles("plugins"))
+            if (Directory.Exists("plugins"))
             {
-                if (!file.EndsWith("dll"))
-                    continue;
+                foreach (string file in Directory.GetFiles("plugins"))
+                {
+                    if (!file.EndsWith("dll"))
+                        continue;
 
-                Assembly.LoadFile(Path.GetFullPath(file));
+                    Assembly.LoadFile(Path.GetFullPath(file));
+                }
             }
 
             ClojureEngine.Initialize(textBox_Log);
